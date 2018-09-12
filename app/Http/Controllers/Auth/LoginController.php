@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -25,7 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/admin';
 
     /**
      * Create a new controller instance.
@@ -35,5 +36,45 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    function authenticated(Request $request, $user)
+    {
+        if (!$user->email_verified_at) {
+            auth()->logout();
+            flash()->error('You cannot login because your account is not verified.<br>Please check your email to verify your account details.');
+            return back();
+        } 
+
+        if ($user->suspended) {
+            auth()->logout();
+            flash()->error('You cannot login because your account is suspended.<br>Please get in touch with us to unsuspend your account.');
+            return back();
+        }
+
+        $user->update([
+            'last_login' => date('Y-m-d H:i:s'),
+            'last_login_ip' => $request->ip()
+        ]);
+
+        return redirect()->intended($this->redirectPath());
+    }
+
+    /**
+     * The user has logged out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
+    protected function loggedOut(Request $request)
+    {
+        return redirect()->route('login');
     }
 }

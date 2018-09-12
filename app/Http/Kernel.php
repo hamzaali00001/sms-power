@@ -57,8 +57,13 @@ class Kernel extends HttpKernel
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'purchases' => \App\Http\Middleware\Purchases::class,
+        'sender-ids' => \App\Http\Middleware\SenderIDs::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'sub-accounts' => \App\Http\Middleware\SubAccounts::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'transactions' => \App\Http\Middleware\Transactions::class,
+        'users' => \App\Http\Middleware\Users::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
 

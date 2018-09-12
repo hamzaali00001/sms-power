@@ -150,6 +150,8 @@ return [
         /*
          * Package Service Providers...
          */
+        App\Providers\OptimusServiceProvider::class,
+        Laracasts\Flash\FlashServiceProvider::class,
 
         /*
          * Application Service Providers...

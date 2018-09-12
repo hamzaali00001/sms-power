@@ -1,47 +1,75 @@
-@extends('layouts.app')
+@extends('layouts.auth')
+
+@section('title', 'Forgot Password?')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
+<div class="sms_container">
+	<!-- Start Page Content -->
+   	<div class="container-fluid">
+	   	<div class="row">
+	    	<div class="col-xs-12 col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4">
+                @if (session('status'))
+                    <div class="alert alert-success">
+                        {{ session('status') }}
+                    </div>
+                @endif
+                <form class="form-horizontal form-bordered row" id="login" action="{{ route('password.email') }}" method="POST">
+                    {{csrf_field()}}
+                    <div class="form-actions col-xs-12">
+                        <h3><i class="fa fa-question-circle"></i> Forgot Password?</h3>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
+                            <label class="control-label" for="email">Enter the email address you registered your account with and we will send you instructions on how to reset your password.</label>
+                            <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}">
+                            @if ($errors->has('email'))
+                                <span class="help-block"><strong>{{ $errors->first('email') }}</strong></span>
+                            @endif
                         </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('password.email') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
+                    </div>
+                    <div class="clearfix20"></div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-xxs-12 col-xs-6 col-sm-6 col-md-6">
+                                <button type="submit" class="btn btn-info"><i class="fa fa-hand-o-right"></i> Send Password Reset Email</button>
+                            </div>
+                            <div class="col-xxs-12 col-xs-6 col-sm-6 col-md-6 text-right">
+                                <a href="{{ route('login') }}" class="btn btn-grey"><i class="fa fa-sign-in"></i> Account Login</a>
                             </div>
                         </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Send Password Reset Link') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </div>
+                </form>
+	        </div>
+	    </div>
+   	</div>
+    <!-- End Page Content -->  
 </div>
+@stop
+
+@section('scripts')
+    <script type="text/javascript" >
+        $("#login").validate({
+            highlight: function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                }
+            },
+            errorPlacement: function(error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+    </script>
 @endsection

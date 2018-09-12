@@ -1,71 +1,88 @@
-@extends('layouts.app')
+@extends('layouts.auth')
+
+@section('title', 'Account Login')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <div class="form-group row">
-                            <label for="email" class="col-sm-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autofocus>
-
-                                @if ($errors->has('email'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
+<div class="sms_container">
+	<!-- Start Page Content -->
+   	<div class="container-fluid">
+	   	<div class="row">
+	    	<div class="col-xs-12 col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4">
+	        	@include('flash::message')
+                <form class="form-horizontal form-bordered row" id="login" action="{{ route('login') }}" method="POST">
+                    {{ csrf_field() }}
+                    <div class="form-actions col-xs-12">
+                        <h3><i class="fa fa-sign-in"></i> Account Login</h3>
+                    </div>
+                    @if ($errors->has('error_message'))
+                        <span class="help-block"><strong>{{ $errors->first('error_message') }}</strong></span>
+                    @endif
+                    <div class="col-xs-12">
+                        <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
+                            <label class="control-label" for="Email">Enter your Email:</label>
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}">
+                            @if ($errors->has('email'))
+                                <span class="help-block"><strong>{{ $errors->first('email') }}</strong></span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="form-group {{ $errors->has('password') ? ' has-error' : '' }}">
+                            <label class="control-label" for="Password">Enter your Password:</label>
+                            <input type="password" class="form-control" name="password" autocomplete="off">
+                            @if ($errors->has('password'))
+                                <span class="help-block"><strong>{{ $errors->first('password') }}</strong></span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="clearfix20"></div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-xxs-12 col-xs-6 col-sm-6 col-md-6">
+                                <button type="submit" class="btn btn-info"><i class="fa fa-sign-in"></i> Account Login</button>
+                            </div>
+                            <div class="col-xxs-12 col-xs-6 col-sm-6 col-md-6 text-right">
+                                &nbsp;
+                                <a href="{{ url('password/reset') }}" class="btn btn-grey"><i class="fa fa-question-circle"></i> Forgot Password?</a>
                             </div>
                         </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                    {{ __('Forgot Your Password?') }}
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </div>
+                </form>
+	        </div>
+	    </div>
+   	</div>
+    <!-- End Page Content -->  
 </div>
+@stop
+
+@section('scripts')
+    <script type="text/javascript" >
+        $("#login").validate({
+            highlight: function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                },
+                password: {
+                    required: true,
+                    minlength: 6
+                }
+            },
+            errorPlacement: function(error, element) {
+                if(element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+    </script>
 @endsection

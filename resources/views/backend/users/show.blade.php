@@ -44,7 +44,7 @@
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-3" for="mobile">Mobile:</label>
             <div class="col-xs-12 col-sm-6 col-md-3">
-                <div class="form-control-static">{{ $user->mobile or 'N/A' }}</div>
+                <div class="form-control-static">{{ $user->mobile ?? 'N/A' }}</div>
             </div>
         </div>
         @if (!Auth::user()->hasRole('postpaid'))
@@ -58,7 +58,7 @@
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-3" for="sms_cost">SMS Cost:</label>
             <div class="col-xs-12 col-sm-6 col-md-3">
-                <div class="form-control-static">{{ $user->sms_cost or env('SMS_COST') }}</div>
+                <div class="form-control-static">{{ $user->sms_cost ?? env('SMS_COST') }}</div>
             </div>
         </div>
         <div class="form-group">
@@ -70,13 +70,13 @@
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-3" for="timezone">Timezone:</label>
             <div class="col-xs-12 col-sm-6 col-md-3">
-                <div class="form-control-static">{{ $user->timezone or 'N/A' }}</div>
+                <div class="form-control-static">{{ $user->timezone ?? 'N/A' }}</div>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-3" for="last-login-ip">Last Login IP:</label>
             <div class="col-xs-12 col-sm-6 col-md-3">
-                <div class="form-control-static">{{ $user->last_login_ip or 'N/A' }}</div>
+                <div class="form-control-static">{{ $user->last_login_ip ?? 'N/A' }}</div>
             </div>
         </div>
         <div class="form-group">

@@ -50,7 +50,7 @@
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-3" for="mobile">Mobile:</label>
             <div class="col-xs-12 col-sm-6 col-md-3">
-                <div class="form-control-static">{{ $sub_account->mobile or 'N/A' }}</div>
+                <div class="form-control-static">{{ $sub_account->mobile ?? 'N/A' }}</div>
             </div>
         </div>
         @if (!Auth::user()->hasRole('postpaid'))
@@ -70,19 +70,19 @@
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-3" for="timezone">Timezone:</label>
             <div class="col-xs-12 col-sm-6 col-md-3">
-                <div class="form-control-static">{{ $sub_account->timezone or 'N/A' }}</div>
+                <div class="form-control-static">{{ $sub_account->timezone ?? 'N/A' }}</div>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-3" for="last-login-ip">Last Login IP:</label>
             <div class="col-xs-12 col-sm-6 col-md-3">
-                <div class="form-control-static">{{ $sub_account->last_login_ip or 'N/A' }}</div>
+                <div class="form-control-static">{{ $sub_account->last_login_ip ?? 'N/A' }}</div>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-xs-12 col-sm-3 col-md-3" for="last-login">Last Login Date:</label>
             <div class="col-xs-12 col-sm-6 col-md-3">
-                <div class="form-control-static">{{ $sub_account->last_login or 'N/A' }}</div>
+                <div class="form-control-static">{{ $sub_account->last_login ?? 'N/A' }}</div>
             </div>
         </div>
         <div class="form-group">

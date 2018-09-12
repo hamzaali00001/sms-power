@@ -13,7 +13,7 @@ use App\Events\Users\UserCreated;
 use App\Models\Role;
 use App\Models\User;
 
-class SubAccountsController extends Controller
+class SubAccounts2Controller extends Controller
 {
     /**
      * Instantiate a new controller instance.
@@ -40,7 +40,37 @@ class SubAccountsController extends Controller
             $users = User::where('parent_id', Auth::id())->with('role')->latest()->get();
         }
 
-        return view('backend.sub-accounts.index', compact('optimus', 'users'));
+        if ($request->ajax()) {
+
+            return Datatables::of($users)
+                            ->addColumn('actions', function ($user) {
+                                return view('backend.sub-accounts.actions', compact('user'))->render();
+                            })
+                            ->editColumn('id',function ($user) use($optimus){
+                                return "<span class='responsive'>User ID</span>{$optimus->encode($user->id)}";
+                            })
+                            ->editColumn('name', function ($user){
+                                return "<span class='responsive'>Name</span>{$user->name}";
+                            })
+                            ->editColumn('mobile', function ($user){
+                                if ($user->mobile) {
+                                    return "<span class='responsive'>Mobile</span>".$user->mobile;
+                                } else {
+                                    return "<span class='responsive'>Mobile</span>N/A";
+                                }
+                            })
+                            ->editColumn('credit', '{{ number_format($credit) }}')
+                            ->editColumn('parent_id', function ($user){
+                                return "<span class='responsive'>Parent A/c</span>{$user->parentAccount->name}";
+                            })
+                            ->editColumn('created_at', function ($user){
+                                return "<span class='responsive'>Name</span>{$user->created_at}";
+                            })
+                            ->escapeColumns([])
+                            ->make(true);
+        }
+
+        return view('backend.sub-accounts.index2', compact('optimus', 'users'));
     }
 
     /**

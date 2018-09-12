@@ -37,7 +37,7 @@
                     <tr>
                         <td><span class="responsive">User ID</span> {{ $optimus->encode($user->id) }}</td>
                         <td><span class="responsive">Name</span> {{ $user->name }}</td>
-                        <td><span class="responsive">Mobile</span> {{ $user->mobile or 'N/A' }}</td>
+                        <td><span class="responsive">Mobile</span> {{ $user->mobile ?? 'N/A' }}</td>
                         <td><span class="responsive">Credit</span> {{ number_format($user->credit) }}</td>
                         <td><span class="responsive">Role</span> {{ $user->role->label }}</td>
                         <td><span class="responsive">Created On</span> {{ $user->created_at }}</td>

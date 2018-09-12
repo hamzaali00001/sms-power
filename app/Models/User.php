@@ -11,7 +11,6 @@ use Carbon\Carbon;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    //use MustVerifyEmail, Notifiable;
     use Notifiable, Sluggable;
 
     /**
@@ -31,8 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'suspended',
         'timezone',
         'last_login',
-        'last_login_ip',
-        'change_password'
+        'last_login_ip'
     ];
 
     /**

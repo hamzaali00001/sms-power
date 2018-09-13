@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Contacts\CreateContactRequest;
 use App\Http\Requests\Backend\Contacts\UpdateContactRequest;
-use Propaganistas\LaravelPhone\PhoneNumber;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\Group;
+use Illuminate\Http\Request;
+use Propaganistas\LaravelPhone\PhoneNumber;
 
 class ContactsController extends Controller
 {
@@ -49,29 +49,26 @@ class ContactsController extends Controller
      */
     public function store(CreateContactRequest $request, Group $group)
     {
-        $phoneNumber = PhoneNumber::make($request->get('full_phone'));
+        $full_phone = $request->full_phone;
+        $phoneNumber = PhoneNumber::make($full_phone);
 
         // Validate that the number is a mobile number
         if (!$phoneNumber->isOfType('mobile')) {
-            flash()->error("$request->get('mobile') is not a valid mobile number.");
+            flash()->error("{$request->get('mobile')} is not a valid mobile number.");
 
             return back();
         }
 
         // Validate that the mobile number is of the given country - Kenya
         if (!$phoneNumber->isOfCountry('KE')) {
-            flash()->error("$request->get('mobile') is not a valid Kenyan mobile number.");
+            flash()->error("{$request->get('mobile')} is not a valid Kenyan mobile number.");
 
             return back();
         }
 
-        $phoneInGroup = Contact::where('group_id', $group->id)
-            ->where('user_id', auth()->id())
-            ->where('mobile', $request->full_phone);
-
         // Check that the mobile number does not exist in that group.
-        if (!$phoneInGroup) {
-            flash()->error("$request->get('mobile') already exists in this group.");
+        if (!$this->uniqueMobile($group->id, $full_phone)) {
+            flash()->error("{$request->get('mobile')} already exists in this group.");
 
             return back();
         }
@@ -135,7 +132,7 @@ class ContactsController extends Controller
         $contact->delete();
 
         flash()->success('The contact has been deleted successfully.');
-        
+
         return redirect()->route('groups.contacts.index', $group);
     }
 
@@ -164,4 +161,20 @@ class ContactsController extends Controller
     {
         return response()->download(public_path('files/sample-contacts.xls'));
     }
+
+    /**
+     * Checks if the mobile number is present in the group
+     *
+     * @param $groupId
+     * @param $mobile
+     * @return bool
+     */
+    private function uniqueMobile($groupId, $mobile)
+    {
+        return !!!Contact::where('group_id', $groupId)
+            ->where('user_id', auth()->id())
+            ->where('mobile', $mobile)
+            ->count();
+    }
+
 }

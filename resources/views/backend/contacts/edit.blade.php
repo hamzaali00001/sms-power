@@ -18,13 +18,13 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">Mobile Number</label>
-                        <input type="text" class="form-control" id="mobile" name="mobile">
+                        <input type="tel" id="mobile" name="mobile" class="form-control mobile">
                     </div>
                     <div class="form-group">
                         <label class="control-label">Contact Status</label>
                         <select name="active" id="active" class="form-control select2">
                             <option value="1">Active</option>
-                            <option value="0">Disabled</option>
+                            <option value="0">Blacklisted</option>
                         </select>
                     </div>
                 </div>

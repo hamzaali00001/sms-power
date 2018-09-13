@@ -45,7 +45,7 @@
                         <td><span class="responsive">Updated On</span> {{ $contact->updated_at }}</td>
                         <td><span class="responsive">Actions</span>
                             <span data-toggle="modal" data-target="#edit" data-name="{{ $contact->name }}" data-mobile="{{ $contact->mobile }}" data-active="{{ $contact->active }}"data-form-action="{{ route('groups.contacts.update', [$group, $contact]) }}">
-                                <button type="button" class="btn btn-info btn-xs" data-toggle="tooltip" data-placement="top" title="Edit Group Name"><i class="fa fa-pencil-square-o"></i></button>
+                                <button type="button" class="btn btn-info btn-xs" data-toggle="tooltip" data-placement="top" title="Edit Contact"><i class="fa fa-pencil-square-o"></i></button>
                             </span>
                             <form action="{{ route('groups.contacts.destroy', [$group, $contact]) }}" class="form-delete" method="POST" style="display:inline">
                                 <input type="hidden" name="_method" value="DELETE">
@@ -71,6 +71,19 @@
     <script>
         $('#contacts').DataTable({
             "order": [[ 4, "desc" ]]
+        });
+
+        $("#mobile").intlTelInput({
+            autoPlaceholder: true,
+            nationalMode: true,
+            initialCountry: "ke",
+            utilsScript: "../../../../js/backend/utils.js",
+            placeholderNumberType: 'MOBILE',
+            hiddenInput: "full_phone",
+        });
+
+        $("#edit-contact").submit(function() {
+            $('#mobile').val($('#mobile').intlTelInput("getNumber"));
         });
 
         $("#edit").on('shown.bs.modal', function(e) {

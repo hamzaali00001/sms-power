@@ -41,7 +41,7 @@ class SendScheduledSMS extends Command
     {
         ScheduledMessage::chunk(100, function ($messages) {
             foreach ($messages as $msg) {
-                if ($msg->send_time->between(Carbon::now()->subMinutes(5), Carbon::now())) {
+                if (Carbon::create(strtotime($msg->send_time))->between(Carbon::now()->subMinutes(5), Carbon::now())) {
                     dispatch(new \App\Jobs\SendScheduledSMS())->onQueue('send-scheduled-sms');
                 }
             }

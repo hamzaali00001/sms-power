@@ -49,37 +49,44 @@ class ContactsController extends Controller
      */
     public function store(CreateContactRequest $request, Group $group)
     {
+        $phoneNumber = PhoneNumber::make($request->get('full_phone'));
+
         // Validate that the number is a mobile number
-        if (!PhoneNumber::make($request->get('mobile'))->isOfType('mobile')) {
-            
+        if (!$phoneNumber->isOfType('mobile')) {
             flash()->error("$request->get('mobile') is not a valid mobile number.");
 
             return back();
+        }
+
         // Validate that the mobile number is of the given country - Kenya
-        } elseif (!PhoneNumber::make($request->get('mobile'))->isOfCountry('KE')) {
-            
+        if (!$phoneNumber->isOfCountry('KE')) {
             flash()->error("$request->get('mobile') is not a valid Kenyan mobile number.");
 
             return back();
+        }
+
+        $phoneInGroup = Contact::where('group_id', $group->id)
+            ->where('user_id', auth()->id())
+            ->where('mobile', $request->full_phone);
+
         // Check that the mobile number does not exist in that group.
-        } elseif (condition) {
-            
+        if (!$phoneInGroup) {
             flash()->error("$request->get('mobile') already exists in this group.");
 
             return back();
-        // Insert the contact into the database.
-        } else {
-            Contact::create([
-                'user_id' => auth()->user()->id,
-                'group_id' => $group->id,
-                'name' => $request->get('name'),
-                'mobile' => PhoneNumber::make($request->get('mobile'), 'KE')->formatE164()
-            ]);
-
-            flash()->success('The contact has been created successfully.');
-
-            return redirect()->route('groups.contacts.index', $group);
         }
+
+        // Insert the contact into the database.
+        Contact::create([
+            'user_id' => auth()->user()->id,
+            'group_id' => $group->id,
+            'name' => $request->get('name'),
+            'mobile' => PhoneNumber::make($request->get('mobile'), 'KE')->formatE164()
+        ]);
+
+        flash()->success('The contact has been created successfully.');
+
+        return redirect()->route('groups.contacts.index', $group);
     }
 
     /**

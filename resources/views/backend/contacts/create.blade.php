@@ -111,7 +111,8 @@
                 nationalMode: true,
                 initialCountry: "ke",
                 utilsScript: "/js/backend/utils.js",
-                placeholderNumberType: 'MOBILE'
+                placeholderNumberType: 'MOBILE',
+                hiddenInput: "full_phone",
             });
 
             $("#create-contact").submit(function() {

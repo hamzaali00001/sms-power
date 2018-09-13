@@ -241,6 +241,16 @@ h2.table-title .icon { position: absolute; top: 0; left: 0; bottom: 0; width: 40
         }
 /* =============== End Tablet & Phone Device CSS =============== */
 
+#error-msg {
+  color: #a94442;
+}
+#valid-msg {
+  color: #00C900;
+}
+input.error {
+  border: 1px solid #a94442;
+}
+
 .intl-tel-input {width: 100%;}
 
 .iti-flag {background-image: url("../../img/backend/flags.png");}

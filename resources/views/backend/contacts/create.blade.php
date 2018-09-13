@@ -81,8 +81,8 @@
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="mobile">Mobile:</label>
                     <div class="col-xs-12 col-sm-6 col-md-3">
                         <input type="tel" id="mobile" name="mobile" class="form-control mobile" value="{{ old('mobile') }}">
-                        <span id="valid-msg" class="hide">✓ Valid</span>
-                        <span id="error-msg" class="hide">Invalid number</span>
+                        <span id="valid-msg" class="help-block hide"><strong>✓ Valid</strong></span>
+                        <span id="error-msg" class="help-block hide"><strong>Invalid number</strong></span>
                     </div>
                 </div>
                 <div class="form-actions fluid">

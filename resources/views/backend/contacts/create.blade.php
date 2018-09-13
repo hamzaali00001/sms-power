@@ -62,11 +62,12 @@
                             </div>
                         </div>
                     </div>
-                </div>                    
+                </div>
             </form>
         </div>
         <div role="tabpanel" class="tab-pane" id="single-contact">
-            <form action="{{ route('groups.contacts.store', $group) }}" class="form-horizontal form-bordered" method="POST">
+            <form action="{{ route('groups.contacts.store', $group) }}" class="form-horizontal form-bordered"
+                  method="POST" id="create-contact">
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <input type="hidden" name="group_id" value="{{ $group->id }}">
@@ -80,6 +81,8 @@
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="mobile">Mobile:</label>
                     <div class="col-xs-12 col-sm-6 col-md-3">
                         <input type="tel" id="mobile" name="mobile" class="form-control mobile" value="{{ old('mobile') }}">
+                        <span id="valid-msg" class="hide">✓ Valid</span>
+                        <span id="error-msg" class="hide">Invalid number</span>
                     </div>
                 </div>
                 <div class="form-actions fluid">
@@ -90,7 +93,7 @@
                             </div>
                         </div>
                     </div>
-                </div>  
+                </div>
             </form>
         </div>
         @if (count($errors))
@@ -99,14 +102,24 @@
             </div>
         @endif
     </div>
-    <!-- End Page Content -->  
+    <!-- End Page Content -->
 </div>
 @stop
 
 @push('scripts')
     <script>
         $(document).ready(function () {
-            $("#mobile").intlTelInput({
+            var mobile = $("#mobile"),
+                errorMsg = $("#error-msg"),
+                validMsg = $("#valid-msg");
+
+            var reset = function() {
+                mobile.removeClass("error");
+                errorMsg.addClass("hide");
+                validMsg.addClass("hide");
+            };
+
+            mobile.intlTelInput({
                 autoPlaceholder: true,
                 nationalMode: true,
                 initialCountry: "ke",
@@ -115,8 +128,26 @@
                 hiddenInput: "full_phone",
             });
 
-            $("#create-contact").submit(function() {
-                $('#mobile').val($('#mobile').intlTelInput("getNumber"));
+            var validateData = function () {
+                reset();
+                if ($.trim(mobile.val()) && mobile.intlTelInput("isValidNumber")) {
+                    validMsg.removeClass("hide");
+                    return false
+                }
+                mobile.addClass("error");
+                errorMsg.removeClass("hide");
+                return true;
+            };
+
+            mobile.blur(validateData);
+
+            // on keyup / change flag: reset
+            mobile.on("keyup change", reset);
+
+            $("#create-contact").submit(function(e) {
+                if (validateData()) {
+                    e.preventDefault();
+                }
             });
         })
     </script>

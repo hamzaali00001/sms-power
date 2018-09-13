@@ -46,13 +46,5 @@ class SendScheduledSMS extends Command
                 }
             }
         });
-
-        /*
-        foreach (ScheduledMessage::all() as $msg) {
-            if ($msg->send_time->between(Carbon::now()->subMinutes(5), Carbon::now())) {
-                dispatch(new \App\Jobs\SendScheduledSMS($message))->onQueue('send-scheduled-sms');
-            }
-        }
-        */
     }
 }

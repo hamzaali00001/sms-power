@@ -79,7 +79,7 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="mobile">Mobile:</label>
                     <div class="col-xs-12 col-sm-6 col-md-3">
-                        <input type="text" id="mobile" name="mobile" class="form-control mobile" value="{{ old('mobile') }}">
+                        <input type="tel" id="mobile" name="mobile" class="form-control mobile" value="{{ old('mobile') }}">
                     </div>
                 </div>
                 <div class="form-actions fluid">
@@ -106,7 +106,7 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
-            $(".mobile").intlTelInput({
+            $("#mobile").intlTelInput({
                 autoPlaceholder: true,
                 nationalMode: true,
                 initialCountry: "ke",

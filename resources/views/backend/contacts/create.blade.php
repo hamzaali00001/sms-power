@@ -110,7 +110,7 @@
                 autoPlaceholder: true,
                 nationalMode: true,
                 initialCountry: "ke",
-                utilsScript: "/js/backend/utils.js",
+                utilsScript: "../../../../js/backend/utils.js",
                 placeholderNumberType: 'MOBILE',
                 hiddenInput: "full_phone",
             });

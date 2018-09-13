@@ -16,7 +16,7 @@ class ContactUs extends Mailable implements ShouldQueue
      *
      * @var array
      */
-    public $data = [];
+    public $data;
 
     /**
      * Create a new message instance.
@@ -36,7 +36,6 @@ class ContactUs extends Mailable implements ShouldQueue
     public function build()
     {
         return $this->view('emails.backend.contact-us')
-                    ->replyTo($this->data['email'])
                     ->subject($this->data['subject']);
     }
 }

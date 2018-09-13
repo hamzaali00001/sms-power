@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Requests\Backend\Pages\ContactUsRequest;
 use App\Http\Controllers\Controller;
-use App\Jobs\SendContactUsEmail;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Backend\ContactUs;
 
 class ContactUsController extends Controller
 {
@@ -27,7 +28,15 @@ class ContactUsController extends Controller
      */
     public function sendEmail(ContactUsRequest $request)
     {
-        dispatch(new SendContactUsEmail());
+        $data = [
+            'email'=>auth()->user()->email,
+            'name' => auth()->user()->name,
+            'phone' => auth()->user()->mobile,
+            'subject' => request('subject'),
+            'message' => request('message')
+        ];
+
+        Mail::to(env('ADMIN_EMAIL'))->send(new ContactUs($data));
 
         flash()->success('Thank you for contacting us. We will get back to you soon.');
         

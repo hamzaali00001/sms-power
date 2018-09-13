@@ -79,7 +79,7 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="mobile">Mobile:</label>
                     <div class="col-xs-12 col-sm-6 col-md-3">
-                        <input type="text" id="mobile" name="mobile" class="form-control" value="{{ old('mobile') }}">
+                        <input type="text" id="mobile" name="mobile" class="form-control mobile" value="{{ old('mobile') }}">
                     </div>
                 </div>
                 <div class="form-actions fluid">
@@ -102,3 +102,21 @@
     <!-- End Page Content -->  
 </div>
 @stop
+
+@push('scripts')
+    <script>
+        $(document).ready(function () {
+            $(".mobile").intlTelInput({
+                autoPlaceholder: true,
+                nationalMode: true,
+                initialCountry: "ke",
+                utilsScript: "/js/backend/utils.js",
+                placeholderNumberType: 'MOBILE'
+            });
+
+            $("#create-contact").submit(function() {
+                $('#mobile').val($('#mobile').intlTelInput("getNumber"));
+            });
+        })
+    </script>
+@endpush

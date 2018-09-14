@@ -5,16 +5,17 @@ namespace App\Jobs;
 use App\Models\FileUpload;
 use App\Models\Group;
 use Carbon\Carbon;
-use DB;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Log;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Propaganistas\LaravelPhone\PhoneNumber;
-use Storage;
 
 class UploadContacts implements ShouldQueue
 {
@@ -43,193 +44,210 @@ class UploadContacts implements ShouldQueue
      */
     public function handle()
     {
-        $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
-        $filePath = $storagePath.$this->fileUpload->location;
+        ini_set('memory_limit', '-1');
+        $storagePath = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
+        $filePath = $storagePath . $this->fileUpload->location;
 
         try {
             DB::beginTransaction();
 
+            // Loading file as a spreadsheet
             $inputFileType = IOFactory::identify($filePath);
             $reader = IOFactory::createReader($inputFileType);
             $spreadsheet = $reader->load($filePath);
 
-            /** @var Collection $invalid_data */
-            $invalid_data = collect();
+            $invalidData = collect();
+            $validContacts = collect();
 
-            /** @var Collection $contacts */
-            $valid_contacts = collect();
+            // Name of the columns
+            $columnNames = [];
 
-            $data = [];
+            // cell values in a row
+            $rowData = [];
 
-            $existing_group_contacts_db = $this->fileUpload->group->contacts;
+            // Message to send to the user
+            $message = '';
 
-            $existing_group_contacts_db_mobile = array();
+            foreach ($spreadsheet->getWorksheetIterator() as $index => $worksheet) {
+                $rowIterator = $worksheet->getRowIterator();
 
-            foreach($existing_group_contacts_db as $existing_contacts){
-                array_push($existing_group_contacts_db_mobile, $existing_contacts->getOriginal()['mobile']);
+                // Get column names
+                foreach ($rowIterator->current()->getCellIterator() as $cell) {
+                    if ($cell->getValue()) {
+                        $columnNames[] = mb_strtolower($cell->getValue());
+                    }
+                }
+
+                // Check if the mobile column exists
+                if (!in_array('mobile', $columnNames)) {
+                    $message = "Mobile Field column is missing in worksheet number {$index}</br>";
+                    continue;
+                }
+
+                // Moving iterator to the next to pass the first row which has column names
+                foreach ($rowIterator as $row) {
+                    if ($rowIterator->key() <= 1) {
+                        continue;
+                    }
+
+                    $iteration = 0;
+                    foreach ($row->getCellIterator() as $cell) {
+                        // Adding data with column names as key and cell data as value
+                        $rowData += [$columnNames[$iteration++] => $cell->getValue()];
+
+                        if ($iteration > count($columnNames) - 1) break;
+                    }
+
+                    // Validates data and populates valid and invalid arrays
+                    $this->validateData($rowData, $validContacts, $invalidData);
+                    $rowData = [];
+                }
+
+                // Removing Duplicates
+                $validContacts = $validContacts->unique('mobile');
+
+                // Database Seeding
+                foreach ($validContacts->chunk(1000) as $chunk) {
+                    DB::table('contacts')->insert($chunk->toArray());
+                }
+
+                DB::commit();
             }
 
-            $allowed_columns = ['name', 'mobile'];
+            if ($invalidData->count() == 0 && (trim($message) == true)) { // Informing user about successful upload
+//                $this->fileUpload->user->notify(new \App\Notifications\FileUploaded());
+                info('File uploaded successfully');
+            } else {
+                //Creating Error message
+                $message = $this->createInvalidMessage($validContacts, $invalidData, $message);
 
-            /** @var Worksheet $worksheet */
-            foreach ($spreadsheet->getWorksheetIterator() as $index=>$worksheet) {
-
-                $worksheetData = $worksheet->toArray();
-
-                //First time get header
-                //if not contains correct columns through an exception
-                if ($index == 0) {
-
-                    $header = array_shift($worksheetData);
-
-                    $header = array_map('mb_strtolower', $header);
-
-                    $array_keys = array_flip($header);
-
-                    $mached_col = array_intersect($allowed_columns, $header);
-
-                    foreach ($allowed_columns as $key => $allow_field) {
-
-                        if (!in_array($allow_field, $header)) {
-                            throw new \Exception('Your file does not contain a '. $allow_field .' named column!');
-                        }
-                    }
-                } else {
-                    array_shift($worksheetData);
-                }
-
-                foreach ($worksheetData as $key => $field) {
-                   array_push($data, array('name'=>$field[$array_keys['name']], 'mobile'=>$field[$array_keys['mobile']]));
-                }
-            }
-
-            $date = Carbon::now()->toDateTimeString();
-
-            $toBeInserted = [];
-
-            $dataCount = count($data);
-
-            foreach ($data as $index => $contactData) {
-
-                $mobile = $contactData['mobile'];
-
-                try{
-
-                    $contactData['mobile'] = PhoneNumber::make($contactData['mobile'], 'KE')->formatE164();
-
-                    //CHECK IF EXISTS IN USERS GROUP
-                    if (in_array($contactData['mobile'], $existing_group_contacts_db_mobile)) {
-                        $invalid_data->push([
-                            'type' => 'group_existing',
-                            'mobile' => $mobile,
-                            'message' => "The mobile {$mobile} exists already in this group!",
-                        ]);
-                    }
-                    //CHECK IF TYPE IS MOBILE
-                    elseif (!PhoneNumber::make($contactData['mobile'])->isOfType('mobile'))
-                    {
-                        $invalid_data->push([
-                            'type' => 'not_mobile',
-                            'mobile' => $mobile,
-                            'message' => "The mobile {$mobile} is not mobile!",
-                        ]);
-                    }
-                    //CHECK IF TYPE IS MOBILE
-                    elseif (!PhoneNumber::make($contactData['mobile'])->isOfCountry('KE'))
-                    {
-                        $invalid_data->push([
-                            'type' => 'wrong_country',
-                            'mobile' => $mobile,
-                            'message' => "The mobile {$mobile} is not Kenyan!",
-                        ]);
-                    }
-                    else
-                    {
-                        $contactData = array_merge(array_filter($contactData),[
-                            'group_id' => $this->group->id,
-                            'user_id' => $this->group->user_id,
-                            'created_at' => $date,
-                            'updated_at' => $date,
-                        ]);
-
-                        $valid_contacts->push($contactData);
-                    }
-                }
-                catch (\Exception $exception) {
-                    $invalid_data->push([
-                        'type' => 'general',
-                        'mobile' => $mobile,
-                        'message' => $exception->getMessage(),
-                    ]);
-                }
-            }
-            
-            //remove duplicate entry
-            $valid_contacts = $valid_contacts->unique('mobile');
-
-            foreach (collect($valid_contacts->toArray())->chunk(1000) as $chunk) {
-                DB::table('contacts')->insert($chunk->toArray());
-            }
-
-            DB::commit();
-            
-            if ($invalid_data->count() == 0) {
-                $this->fileUpload->user->notify(new \App\Notifications\FileUploaded());
-            }
-            else {
-
-                $grouped = $invalid_data->groupBy('type');
-
-                $message = null;
-
-                if ($valid_contacts->count() > 0) {
-                    $message = "Your file has uploaded <b>{$valid_contacts->count()} Contacts </b> with some errors!</br>";
-                } else {
-                    $message = "Your file did not save any contact! You have some errors!";
-                }
-
-                /** @var Collection $items */
-                foreach ($grouped as $type=> $items) {
-                    switch ($type) {
-                        case 'group_existing':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} existing contacts in group! </br>";
-                            break;
-                        case 'wrong_country':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} contacts that are not from Kenya! </br>";
-                            break;
-                        case 'not_mobile':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} that are not mobile! </br>";
-                            break;
-                        case 'duplicate_file':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} duplicated contacts! </br>";
-                            break;
-                        case 'missing_country_code_error':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} contacts with missing country code! </br>";
-                            break;
-                        case 'invalid_parameter_error':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} contacts with invalid parameterd! </br>";
-                            break;
-                        case 'number_format_error':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} contacts with wrong number format! </br>";
-                            break;
-                        case 'number_parser_error':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} contacts which number could not be parsed! </br>";
-                            break;
-                        case 'general':
-                            if($items->count() > 0) $message .= "Your file contains {$items->count()} wrong contacts! </br>";
-                            break;
-                    }
-                }
-
-                $this->fileUpload->user->notify(new \App\Notifications\FileUploadedWithErrors($message));
+                info($message);
+                // Notifying user about all the files with failed uploads
+//                $this->fileUpload->user->notify(new \App\Notifications\FileUploadedWithErrors($message));
             }
         } catch (\Exception $exception) {
-
-            Log::error("Error uploading file: ". $exception->getMessage() . ' on ' . $exception->getFile() . ':' . $exception->getLine() . PHP_EOL . $exception->getTraceAsString());
+            Log::error(
+                "Error uploading file: {$exception->getMessage()} on {$exception->getFile()} : {$exception->getLine()}" .
+                PHP_EOL .
+                $exception->getTraceAsString()
+            );
 
             DB::rollBack();
 
-            Storage::delete($this->fileUpload->filename);
+            Storage::delete($this->fileUpload->location);
         }
+    }
+
+    /**
+     * Validates mobile number and add them into either validContacts or invalidData
+     *
+     * @param array $rowData
+     * @param Collection $validContacts
+     * @param Collection $invalidData
+     * @return void
+     */
+    private function validateData($rowData, &$validContacts, &$invalidData)
+    {
+        $mobile = $rowData['mobile'];
+
+        $group_contacts_mobile = $this->fileUpload->group->contacts->pluck('mobile')->toArray();
+
+        try {
+            $mobileFormatted = PhoneNumber::make($mobile, 'KE')->formatE164();
+
+            // Check if exists in Users Group
+            if (in_array($mobileFormatted, $group_contacts_mobile)) {
+                $invalidData->push([
+                    'type' => 'group_existing',
+                    'mobile' => $mobile,
+                    'message' => "The mobile {$mobile} exists already in this group!",
+                ]);
+            } // Check If type is mobile
+            elseif (!PhoneNumber::make($mobileFormatted)->isOfType('mobile')) {
+                $invalidData->push([
+                    'type' => 'not_mobile',
+                    'mobile' => $mobile,
+                    'message' => "The mobile {$mobile} is not mobile!",
+                ]);
+            } // Check if country is KE
+            elseif (!PhoneNumber::make($mobileFormatted)->isOfCountry('KE')) {
+                $invalidData->push([
+                    'type' => 'wrong_country',
+                    'mobile' => $mobile,
+                    'message' => "The mobile {$mobile} is not Kenyan!",
+                ]);
+            } // Contact Data is verified, push into validContacts
+            else {
+                $date = Carbon::now()->toDateTimeString();
+
+                $validContacts->push([
+                    'group_id' => $this->group->id,
+                    'user_id' => $this->group->user_id,
+                    'mobile' => $mobileFormatted,
+                    'created_at' => $date,
+                    'updated_at' => $date,
+                    'name' => $rowData['name'],
+                ]);
+            }
+        } catch (\Exception $e) {
+            $invalidData->push([
+                'type' => 'general',
+                'mobile' => $mobile,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Creates Invalid Message by iterating through invalid data
+     *
+     * @param $validContacts
+     * @param Collection $invalidData
+     * @param string $message
+     * @return string
+     */
+    private function createInvalidMessage($validContacts, $invalidData, $message)
+    {
+        if ($validContacts->count() > 0) {
+            $message .= "Your file has uploaded <b>{$validContacts->count()} Contacts </b> with some errors!</br>";
+        } else {
+            $message .= "Your file did not save any contact! You have some errors!";
+        }
+
+        $invalidGroups = $invalidData->groupBy('type');
+
+        foreach ($invalidGroups as $type => $items) {
+            switch ($type) {
+                case 'group_existing':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} existing contacts in group! </br>";
+                    break;
+                case 'wrong_country':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} contacts that are not from Kenya! </br>";
+                    break;
+                case 'not_mobile':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} that are not mobile! </br>";
+                    break;
+                case 'duplicate_file':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} duplicated contacts! </br>";
+                    break;
+                case 'missing_country_code_error':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} contacts with missing country code! </br>";
+                    break;
+                case 'invalid_parameter_error':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} contacts with invalid parameterd! </br>";
+                    break;
+                case 'number_format_error':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} contacts with wrong number format! </br>";
+                    break;
+                case 'number_parser_error':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} contacts which number could not be parsed! </br>";
+                    break;
+                case 'general':
+                    if ($items->count() > 0) $message .= "Your file contains {$items->count()} wrong contacts! </br>";
+                    break;
+            }
+        }
+
+        return $message;
     }
 }

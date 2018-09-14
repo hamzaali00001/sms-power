@@ -10,7 +10,6 @@
                 <input type="hidden" name="_method" value="PUT">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-                <input type="hidden" name="group_id" value="">
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="control-label">Contact Name</label>

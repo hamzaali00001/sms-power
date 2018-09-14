@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Backend;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Carbon\Carbon;
-use App\Models\Group;
-use App\Models\Contact;
-use App\Models\SentMessage;
-use App\Models\ScheduledMessage;
 use AfricasTalking\SDK\AfricasTalking;
+use App\Http\Controllers\Controller;
+use App\Models\Contact;
+use App\Models\Group;
+use App\Models\ScheduledMessage;
+use App\Models\SentMessage;
+use Carbon\Carbon;
 
 class SendSMSController extends Controller
 {
@@ -97,10 +96,9 @@ class SendSMSController extends Controller
     /**
      * Send Bulk SMS.
      *
-     * @param  \Illuminate\Http\Request
      * @return \Illuminate\Http\Response
      */
-    public function bulkSMS(Request $request)
+    public function bulkSMS()
     {
        // Check user credit balance
         $this->checkBalance();

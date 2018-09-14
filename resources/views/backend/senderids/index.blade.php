@@ -50,7 +50,7 @@
                     <tr>
                         <td><span class="responsive">Sender ID</span> {{ $senderid->name }}</td>
                         <td><span class="responsive">Cost</span> {{ number_format($senderid->cost) }}</td>
-                        <td><span class="responsive">Trans. Code</span> {{ $senderid->trans_code or 'N/A' }}</td>
+                        <td><span class="responsive">Trans. Code</span> {{ $senderid->trans_code ?? 'N/A' }}</td>
                         <td><span class="responsive">Client Name</span> {{ $senderid->user->name }}</td>
                         <?php
                             if ($senderid->status == 'Active') $label = "label-success";

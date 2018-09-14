@@ -33,7 +33,7 @@ class UpdateUserRequest extends FormRequest
             'mobile' => [
                 'required',
                 Rule::unique('users')->ignore($this->user->id),
-                //Rule::phone()->detect()->country('KE')->mobile()
+                Rule::phone()->detect()->country('KE')->mobile()
             ],
             'timezone' => 'required|timezone'
         ];

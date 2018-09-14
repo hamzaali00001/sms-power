@@ -19,22 +19,20 @@ class UploadContactsController extends Controller
      */
     public function __invoke(UploadContactsRequest $request, Group $group)
     {
-        $file = $request->filename;
-
-        if ($file->isValid()) {
+        if ($request->filename->isValid()) {
 
             $fileUpload = FileUpload::create([
                 'user_id' => auth()->user()->id,
                 'group_id' => $group->id,
-                'filename' => $file->hashName(),
-                'extension' => $file->extension(),
-                'filesize' => $file->getClientSize(),
-                'location' => $file->store('contact-files')
+                'filename' => $request->filename->hashName(),
+                'extension' => $request->filename->extension(),
+                'filesize' => $request->filename->getClientSize(),
+                'location' => $request->filename->store('contact-files')
             ]);
 
             flash()->success('Your contacts are currently being processed.');
 
-            dispatch(new UploadContacts($fileUpload, $group));
+            dispatch(new UploadContacts($fileUpload, $group))->onQueue('file-uploads');
         } else {
             flash()->error('There was a problem uploading your file. Please try again.');
             return back();

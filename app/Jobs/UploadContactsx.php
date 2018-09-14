@@ -16,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use Storage;
 
-class UploadContacts implements ShouldQueue
+class UploadxContacts implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

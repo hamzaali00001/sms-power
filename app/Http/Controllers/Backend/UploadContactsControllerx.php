@@ -8,7 +8,7 @@ use App\Jobs\UploadContacts;
 use App\Models\FileUpload;
 use App\Models\Group;
 
-class UploadContactsController extends Controller
+class UploadContactsxController extends Controller
 {
     /**
      * Upload the contacts file

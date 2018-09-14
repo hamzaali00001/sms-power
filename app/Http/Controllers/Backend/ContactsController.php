@@ -54,6 +54,7 @@ class ContactsController extends Controller
 
         // Validate that the number is a mobile number
         if (!$phoneNumber->isOfType('mobile')) {
+            
             flash()->error("{$request->get('mobile')} is not a valid mobile number.");
 
             return back();
@@ -61,6 +62,7 @@ class ContactsController extends Controller
 
         // Validate that the mobile number is of the given country - Kenya
         if (!$phoneNumber->isOfCountry('KE')) {
+            
             flash()->error("{$request->get('mobile')} is not a valid Kenyan mobile number.");
 
             return back();
@@ -68,6 +70,7 @@ class ContactsController extends Controller
 
         // Check that the mobile number does not exist in that group.
         if (!$this->uniqueMobile($group->id, $full_phone)) {
+            
             flash()->error("{$request->get('mobile')} already exists in this group.");
 
             return back();
@@ -171,10 +174,9 @@ class ContactsController extends Controller
      */
     private function uniqueMobile($groupId, $mobile)
     {
-        return !!!Contact::where('group_id', $groupId)
+        return !Contact::where('group_id', $groupId)
             ->where('user_id', auth()->id())
             ->where('mobile', $mobile)
             ->count();
     }
-
 }

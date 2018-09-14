@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "africastalking/africastalking",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AfricasTalkingLtd/africastalking-php.git",
-                "reference": "635413b0187271bf63ec8a1307e90b6935f5c1d4"
+                "reference": "ad7606c16fdfb312cc4647c1183fc7d5a5935f9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AfricasTalkingLtd/africastalking-php/zipball/635413b0187271bf63ec8a1307e90b6935f5c1d4",
-                "reference": "635413b0187271bf63ec8a1307e90b6935f5c1d4",
+                "url": "https://api.github.com/repos/AfricasTalkingLtd/africastalking-php/zipball/ad7606c16fdfb312cc4647c1183fc7d5a5935f9d",
+                "reference": "ad7606c16fdfb312cc4647c1183fc7d5a5935f9d",
                 "shasum": ""
             },
             "require": {
@@ -56,20 +56,20 @@
                 "ussd",
                 "voice"
             ],
-            "time": "2018-03-08T08:02:21+00:00"
+            "time": "2018-09-13T17:09:51+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.67.10",
+            "version": "3.67.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "e6571970d7f28da4c736eeeb0d01c0a5fdaf51e1"
+                "reference": "cdc7180ae87b23d8b34eb8eb8176002081b32c3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/e6571970d7f28da4c736eeeb0d01c0a5fdaf51e1",
-                "reference": "e6571970d7f28da4c736eeeb0d01c0a5fdaf51e1",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/cdc7180ae87b23d8b34eb8eb8176002081b32c3d",
+                "reference": "cdc7180ae87b23d8b34eb8eb8176002081b32c3d",
                 "shasum": ""
             },
             "require": {
@@ -136,7 +136,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2018-09-11T18:17:34+00:00"
+            "time": "2018-09-13T18:34:42+00:00"
         },
         {
             "name": "cocur/slugify",
@@ -4436,20 +4436,23 @@
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "cecbc684605bb0cc288828eb5d65d93d5c676d3c"
+                "reference": "050bedf145a257b1ff02746c31894800e5122946"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/cecbc684605bb0cc288828eb5d65d93d5c676d3c",
-                "reference": "cecbc684605bb0cc288828eb5d65d93d5c676d3c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/050bedf145a257b1ff02746c31894800e5122946",
+                "reference": "050bedf145a257b1ff02746c31894800e5122946",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.1"
             },
             "type": "library",
             "extra": {
@@ -4479,7 +4482,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2018-06-11T11:44:00+00:00"
+            "time": "2018-09-13T20:33:42+00:00"
         },
         {
             "name": "phpunit/php-text-template",

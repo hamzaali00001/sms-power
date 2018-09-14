@@ -13,19 +13,10 @@
         </ol>
     </div>
 
-    @include('flash::message')
-
     <!-- Start Page Content -->
     <div class="sms_heading">
         <h3><i class="fa fa-at"></i> Add Contacts</h3>
     </div>
-
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success alert-block">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>{{ $message }}</strong>
-        </div>
-    @endif
 
     <form class="form-horizontal form-bordered">
         <div class="form-group group-title">
@@ -96,11 +87,7 @@
                 </div>
             </form>
         </div>
-        @if (count($errors))
-            <div class="alert alert-danger">
-                <strong>Whoops!</strong> There were some problems with your file upload. Please try again.
-            </div>
-        @endif
+        @include('flash::message')
     </div>
     <!-- End Page Content -->
 </div>

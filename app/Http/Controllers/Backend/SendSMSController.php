@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Backend;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\ScheduledMessage;
+use Carbon\Carbon;
+use App\Models\Group;
+use App\Models\Contact;
 use App\Models\SentMessage;
+use App\Models\ScheduledMessage;
+use AfricasTalking\SDK\AfricasTalking;
 
 class SendSMSController extends Controller
 {
@@ -38,13 +42,56 @@ class SendSMSController extends Controller
      */
     public function singleSMS()
     {
+        // Check user credit balance
+        $this->checkBalance();
+
         if (request('schedule') === 'No') {
-            dispatch(new \App\Jobs\SendSMS);
-        } elseif (request('schedule') === 'Yes') {
-            dispatch(new \App\Jobs\ScheduleSMS);
+            SentMessage::create([
+                'user_id' => auth()->user()->id,
+                'from' => request('from'),
+                'to' => request('to'),
+                'message' => request('message') .' '. env('OPT_OUT'),
+                'msg_count' => $this->msgCount(),
+                'characters' => utf8_encode(strlen(request('message'))),
+                'cost' => $this->smsCost()
+            ]);
+
+            // Send the message
+            $sms = $this->africastalking()->sms();
+
+            $sms->send([
+                'message' => request('message') .' '. env('OPT_OUT'),
+                'to' => request('to'),
+                'enqueue' => 'true'
+            ]);
+
+            flash()->success('Your message has been sent out.');
+        } 
+
+        if (request('schedule') === 'Yes') {
+            ScheduledMessage::create([
+                'user_id' => auth()->user()->id,
+                'from' => request('from'),
+                'to' => request('to'),
+                'recipients' => 1,
+                'message' => request('message') .' '. env('OPT_OUT'),
+                'msg_count' => $this->msgCount(),
+                'characters' => utf8_encode(strlen(request('message'))),
+                'cost' => $this->totalCost(),
+                'send_time' => Carbon::createFromTimeString(request('send_time'))
+            ]);
+
+            flash()->info('Your message has been scheduled out.');
         }
 
-        return redirect()->back();
+        // Update the user's credit;
+        $this->updateBalance();
+
+        if (request('schedule') === 'No') {
+            return redirect()->route('sent-sms.index');
+        } else {
+            return redirect()->route('scheduled-sms.index');
+        }
     }
 
     /**
@@ -55,12 +102,142 @@ class SendSMSController extends Controller
      */
     public function bulkSMS(Request $request)
     {
+       // Check user credit balance
+        $this->checkBalance();
+
         if (request('schedule') === 'No') {
-            dispatch(new \App\Jobs\SendSMS);
-        } elseif (request('schedule') === 'Yes') {
-            dispatch(new \App\Jobs\ScheduleSMS);
+            $recipients = Contact::where('group_id', request('to'))->pluck('mobile')->toArray();
+            foreach ($recipients as $key => $value) {
+                SentMessage::create([
+                    'user_id' => auth()->user()->id,
+                    'from' => request('from'),
+                    'to' => $value,
+                    'message' => request('message') .' '. env('OPT_OUT'),
+                    'msg_count' => $this->msgCount(),
+                    'characters' => utf8_encode(strlen(request('message'))),
+                    'cost' => $this->smsCost()
+                ]);
+            }
+
+            // Send the message
+            $sms = $this->africastalking()->sms();
+
+            $sms->send([
+                'message' => request('message') .' '. env('OPT_OUT'),
+                'to' => $recipients,
+                'enqueue' => 'true'
+            ]);
+
+            flash()->success('Your message has been sent out.');
+        } 
+
+        if (request('schedule') === 'Yes') {
+            ScheduledMessage::create([
+                'user_id' => auth()->user()->id,
+                'from' => request('from'),
+                'recipients' => count(Contact::where('group_id',request('to'))->pluck('mobile')->toArray()),
+                'message' => request('message') .' '. env('OPT_OUT'),
+                'msg_count' => $this->msgCount(),
+                'characters' => utf8_encode(strlen(request('message'))),
+                'cost' => $this->totalCost(),
+                'send_time' => Carbon::createFromTimeString(request('send_time'))
+            ]);
+
+            flash()->info('Your message has been scheduled out.');
         }
 
-        return redirect()->back();
+        // Update the user's credit;
+        $this->updateBalance();
+
+        if (request('schedule') === 'No') {
+            return redirect()->route('sent-sms.index');
+        } else {
+            return redirect()->route('scheduled-sms.index');
+        }
+    }
+
+    /**
+     * Instantiate a new AfricasTalking instance.
+     *
+     * @return AfricasTalking\SDK\AfricasTalking;
+     */
+    protected function africastalking()
+    {
+        $username = env('AFRICASTALKING_USERNAME');
+        $apiKey = env('AFRICASTALKING_API_KEY');
+
+        return new AfricasTalking($username, $apiKey);
+    }
+
+    /**
+     * Check the user's balance.
+     */
+    private function checkBalance()
+    {
+        if (auth()->user()->creditBalance() < $this->totalCost()) {
+            
+            flash()->error('Your message cannot be sent due to insufficient credit balance.');
+
+            return redirect()->back();
+        }
+    }
+
+    /**
+     * Update the user's balance.
+     */
+    private function updateBalance()
+    {
+        if (!auth()->user()->hasRole('admin')) {
+            auth()->user()->update([
+               'credit' => auth()->user()->credit - $this->totalCost()
+            ]);
+        }
+    }
+
+    /**
+     * Calculate the total message parts.
+     */
+    private function msgCount()
+    {
+        $msg = request('message');
+        $final_msg = $msg . ' ' . env('OPT_OUT');
+
+        if (strlen($final_msg) <= 160) {
+            return $msg_count = 1;
+        } else {
+            return $msg_count = ceil(utf8_encode(strlen($final_msg))/env('SMS_LENGTH'));
+        }
+    }
+
+    /**
+     * Get the cost of sending a single message.
+     */
+    private function smsCost()
+    {
+        if (empty(auth()->user()->sms_cost)) {
+            return $sms_cost = env('SMS_COST');
+        } else {
+            return $sms_cost = auth()->user()->sms_cost;
+        }
+    }
+
+    /**
+     * Calculate the total cost of sending the message(s).
+     */
+    private function totalCost()
+    {
+        return number_format($this->msgCount() * $this->recipients() *  $this->smsCost(), 2);
+    }
+
+    /**
+     * Get the total recipients.
+     */
+    private function recipients()
+    {
+        if (request('type') === 'bulk') {
+            return $recipients = count(Contact::where('group_id', request('to'))->pluck('mobile'));
+        } elseif (request('type') === 'single') {
+            return $recipients = 1;
+        }
     }
 }

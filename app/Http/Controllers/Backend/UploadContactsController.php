@@ -32,13 +32,14 @@ class UploadContactsController extends Controller
                 'location' => $file->store('contact-files')
             ]);
 
-            flash()->success('Your file is currently being processed. You will be notified when done.');
+            flash()->success('Your contacts are currently being processed.');
 
             dispatch(new UploadContacts($fileUpload, $group))->onQueue('file-uploads');
         } else {
             flash()->error('There was a problem uploading your file. Please try again.');
+            return back();
         }
 
-        return back();
+        return redirect()->route('groups.contacts.index', $group);
     }
 }

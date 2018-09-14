@@ -37,13 +37,13 @@ class SendScheduledSMS implements ShouldQueue
             if ($this->message->recipient) {
                 $to = $this->recipient;
                 SentMessage::create([
-                    'user_id' => $this->user_id,
-                    'from' => $this->from,
-                    'to' => $to,
-                    'message' => $this->message,
-                    'msg_count' => $this->msg_count,
-                    'characters' => $this->characters,
-                    'cost' => $this->cost
+                    'user_id' => $msg->user_id,
+                    'from' => $msg->from,
+                    'to' => $msg->to,
+                    'message' => $msg->message,
+                    'msg_count' => $msg->msg_count,
+                    'characters' => $msg->msg_characters,
+                    'cost' => $msg->cost
                 ]);
             } elseif (!is_null($this->message->group_id)) {
                 $to = Contact::where('group_id', request('to'))->pluck('mobile')->toArray();

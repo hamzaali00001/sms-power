@@ -52,12 +52,7 @@
                         <td><span class="responsive">Cost</span> {{ number_format($senderid->cost) }}</td>
                         <td><span class="responsive">Trans. Code</span> {{ $senderid->trans_code ?? 'N/A' }}</td>
                         <td><span class="responsive">Client Name</span> {{ $senderid->user->name }}</td>
-                        <?php
-                            if ($senderid->status == 'Active') $label = "label-success";
-                            if ($senderid->status == 'Rejected') $label = "label-danger";
-                            if ($senderid->status == 'Processing') $label = "label-info";
-                        ?>
-                        <td><span class="responsive">Status</span> <span class="label {{ $label }}">{{ $senderid->status }}</span></td>
+                        <td><span class="responsive">Status</span> <span class="{{ $senderid->status_label }}">{{ $senderid->status }}</span></td>
                         <td><span class="responsive">Created On</span> {{ $senderid->created_at }}</td>
                         <td><span class="responsive">Actions</span>
                             @if (auth()->user()->hasRole('admin') && $senderid->status != 'Active')

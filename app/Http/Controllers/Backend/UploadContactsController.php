@@ -37,6 +37,7 @@ class UploadContactsController extends Controller
             dispatch(new UploadContacts($fileUpload, $group));
         } else {
             flash()->error('There was a problem uploading your file. Please try again.');
+
             return back();
         }
 

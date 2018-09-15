@@ -88,6 +88,11 @@
             </form>
         </div>
         @include('flash::message')
+        @if($errors->has('filename'))
+            <div class="alert alert-danger">
+                <span>{{$errors->first('filename')}}</span>
+            </div>
+        @endif
     </div>
     <!-- End Page Content -->
 </div>

@@ -38,4 +38,13 @@ class UploadContactsRequest extends FormRequest
             'filename' => 'required|file|mimetypes:'.implode($mime_types,',').'|max:51200'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'filename.mimetypes' => 'Only the following file extensions are allowed: .xls, .xlsx, csv, .txt or odds',
+            'filename.required' => 'Please Upload a file',
+            'filename.file' => 'Your file is not successfully uploaded'
+        ];
+    }
 }

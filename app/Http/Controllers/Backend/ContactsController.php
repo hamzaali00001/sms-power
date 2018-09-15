@@ -8,6 +8,8 @@ use App\Http\Requests\Backend\Contacts\UpdateContactRequest;
 use App\Models\Contact;
 use App\Models\Group;
 use Illuminate\Http\Request;
+use Propaganistas\LaravelPhone\Exceptions\CountryCodeException;
+use Propaganistas\LaravelPhone\Exceptions\NumberParseException;
 use Propaganistas\LaravelPhone\PhoneNumber;
 
 class ContactsController extends Controller
@@ -49,18 +51,24 @@ class ContactsController extends Controller
      */
     public function store(CreateContactRequest $request, Group $group)
     {
-        // Validate that the number is a mobile number
-        if (!PhoneNumber::make($request->get('full_phone'))->isOfType('mobile')) {
-            
-            flash()->error("{$request->get('mobile')} is not a valid mobile number.");
+        try {
+            // Validate that the number is a mobile number
+            if ((!PhoneNumber::make($request->get('full_phone'))->isOfType('mobile'))) {
 
-            return back();
-        }
+                flash()->error("{$request->get('mobile')} is not a valid mobile number.");
 
-        // Validate that the mobile number is of the given country - Kenya
-        if (!PhoneNumber::make($request->get('full_phone'))->isOfCountry('KE')) {
-            
-            flash()->error("{$request->get('mobile')} is not a valid Kenyan mobile number.");
+                return back();
+            }
+
+            // Validate that the mobile number is of the given country - Kenya
+            if (!PhoneNumber::make($request->get('full_phone'))->isOfCountry('KE')) {
+
+                flash()->error("{$request->get('mobile')} is not a valid Kenyan mobile number.");
+
+                return back();
+            }
+        } catch (NumberParseException $exception) {
+            flash()->error("{$request->get('mobile')} is not a valid number.");
 
             return back();
         }

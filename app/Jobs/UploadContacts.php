@@ -25,7 +25,7 @@ class UploadContacts implements ShouldQueue
     protected $group;
     protected $invalidCount = [];
     protected $validContactsCount;
-    protected $chunkSize = 100;
+    protected $chunkSize = 1000;
 
     /**
      * Create a new job instance.
@@ -53,9 +53,6 @@ class UploadContacts implements ShouldQueue
      */
     public function handle()
     {
-        ini_set('memory_limit', '-1');
-        ini_set('max_execution_time', '500000');
-
         $storagePath = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
         $filePath = $storagePath . $this->fileUpload->location;
 

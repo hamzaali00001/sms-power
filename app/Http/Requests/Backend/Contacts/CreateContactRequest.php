@@ -27,8 +27,8 @@ class CreateContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|integer',
-            'group_id' => 'required|integer',
+            'user_id' => 'required|integer|exists:users,id',
+            'group_id' => 'required|integer|exists:groups,id',
             'mobile' =>[
                 'required',
                 Rule::phone()->detect()->country('KE')->mobile(),

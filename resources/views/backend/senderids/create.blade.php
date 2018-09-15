@@ -96,7 +96,6 @@
                 required: true
             },
             trans_code: {
-                required: true,
                 minlength: 10
             }
         },

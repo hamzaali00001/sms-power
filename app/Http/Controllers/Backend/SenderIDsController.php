@@ -6,7 +6,11 @@ use App\Http\Requests\Backend\SenderIDs\CreateSenderIDRequest;
 use App\Http\Requests\Backend\SenderIDs\UpdateSenderIDRequest;
 use App\Http\Controllers\Controller;
 use App\Models\SenderId;
+use App\Models\User;
+use App\Notifications\SenderIDCreated;
+use App\Notifications\SenderIDUpdated;
 use Jenssegers\Optimus\Optimus;
+use Illuminate\Support\Facades\Notification;
 
 class SenderIDsController extends Controller
 {
@@ -59,6 +63,8 @@ class SenderIDsController extends Controller
 
         flash()->success('The Sender ID has been created successfully.');
 
+        Notification::route('mail', env('ADMIN_EMAIL'))->notify(new SenderIDCreated());
+
         return redirect()->route('senderids.index');
     }
 
@@ -82,9 +88,13 @@ class SenderIDsController extends Controller
      */
     public function update(UpdateSenderIDRequest $request, SenderId $senderid)
     {
+        $sender_id_owner = User::where('id', $senderid->user_id)->first();
+
         $senderid->update($request->all());
 
         flash()->success('The Sender ID has been updated successfully.');
+
+        Notification::route('mail', $sender_id_owner->email)->notify(new SenderIDUpdated());
 
         return redirect()->route('senderids.index');
     }

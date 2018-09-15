@@ -49,11 +49,8 @@ class ContactsController extends Controller
      */
     public function store(CreateContactRequest $request, Group $group)
     {
-        $full_phone = $request->full_phone;
-        $phoneNumber = PhoneNumber::make($full_phone);
-
         // Validate that the number is a mobile number
-        if (!$phoneNumber->isOfType('mobile')) {
+        if (!PhoneNumber::make($request->get('full_phone'))->isOfType('mobile')) {
             
             flash()->error("{$request->get('mobile')} is not a valid mobile number.");
 
@@ -61,7 +58,7 @@ class ContactsController extends Controller
         }
 
         // Validate that the mobile number is of the given country - Kenya
-        if (!$phoneNumber->isOfCountry('KE')) {
+        if (!PhoneNumber::make($request->get('full_phone'))->isOfCountry('KE')) {
             
             flash()->error("{$request->get('mobile')} is not a valid Kenyan mobile number.");
 
@@ -69,7 +66,9 @@ class ContactsController extends Controller
         }
 
         // Check that the mobile number does not exist in that group.
-        if (!$this->uniqueMobile($group->id, $full_phone)) {
+        $user_group_contacts = Contact::where('group_id', $group->id)->get()->pluck('mobile')->toArray();
+
+        if (in_array($request->get('full_phone'), $user_group_contacts)) {
             
             flash()->error("{$request->get('mobile')} already exists in this group.");
 
@@ -81,7 +80,7 @@ class ContactsController extends Controller
             'user_id' => auth()->user()->id,
             'group_id' => $group->id,
             'name' => $request->get('name'),
-            'mobile' => PhoneNumber::make($request->get('mobile'), 'KE')->formatE164()
+            'mobile' => $request->get('full_phone')
         ]);
 
         flash()->success('The contact has been created successfully.');
@@ -115,7 +114,8 @@ class ContactsController extends Controller
             'user_id' => auth()->user()->id,
             'group_id' => $group->id,
             'name' => $request->get('name'),
-            'mobile' => PhoneNumber::make($request->get('mobile'), 'KE')->formatE164()
+            'mobile' => $request->get('mobile'),
+            'active' => $request->get('active')
         ]);
 
         flash()->success('The contact has been updated successfully.');
@@ -163,20 +163,5 @@ class ContactsController extends Controller
     public function sample()
     {
         return response()->download(public_path('files/sample-contacts.xls'));
-    }
-
-    /**
-     * Checks if the mobile number is present in the group
-     *
-     * @param $groupId
-     * @param $mobile
-     * @return bool
-     */
-    private function uniqueMobile($groupId, $mobile)
-    {
-        return !Contact::where('group_id', $groupId)
-            ->where('user_id', auth()->id())
-            ->where('mobile', $mobile)
-            ->count();
     }
 }

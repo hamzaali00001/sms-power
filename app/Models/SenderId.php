@@ -83,4 +83,25 @@ class SenderId extends Model
     {
         return $query->whereStatus('Active');
     }
+
+    /**
+     * Get the status label.
+     *
+     * @param  string $value
+     * @return string
+     */
+    public function getStatusLabelAttribute($value)
+    { 
+        switch ($this->status)
+        {
+            case 'Active':
+                return 'label label-success';
+
+            case 'Rejected':
+                return 'label label-danger';
+
+            default:
+                return 'label label-info';
+        }
+    }
 }

@@ -15,9 +15,9 @@ class HomeController extends Controller
     public function __invoke()
     {
         if (auth()->user()->hasRole('admin')) {
-            $messages = ScheduledMessage::with('user')->limit(10)->latest()->get();
+            $messages = ScheduledMessage::with('user')->latest()->limit(10)->get();
         } else {
-            $messages = auth()->user()->scheduledMessages()->with('user')->limit(10)->latest()->get();
+            $messages = auth()->user()->scheduledMessages()->with('user')->latest()->limit(10)->get();
         }
 
         return view('backend.pages.home', compact('messages'));

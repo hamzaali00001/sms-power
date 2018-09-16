@@ -47,12 +47,6 @@ class LoginController extends Controller
      */
     function authenticated(Request $request, $user)
     {
-        if (!$user->email_verified_at) {
-            auth()->logout();
-            flash()->error('You cannot login because your account is not verified.<br>Please check your email to verify your account details.');
-            return back();
-        } 
-
         if ($user->suspended) {
             auth()->logout();
             flash()->error('You cannot login because your account is suspended.<br>Please get in touch with us to unsuspend your account.');

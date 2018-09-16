@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Carbon\Carbon;
 use App\Models\SentMessage;
 use App\Models\ScheduledMessage;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class SendScheduledSMS extends Command
@@ -39,24 +39,13 @@ class SendScheduledSMS extends Command
      * @return mixed
      */
     public function handle()
-    {
-        /*
+    { 
         ScheduledMessage::chunk(100, function ($messages) {
             foreach ($messages as $msg) {
                 if (Carbon::create(strtotime($msg->send_time))->between(Carbon::now()->subMinutes(5), Carbon::now())) {
-                    dispatch(new \App\Jobs\SendScheduledSMS())->onQueue('send-scheduled-sms');
+                    dispatch(new \App\Jobs\SendScheduledSMS($msg))->onQueue('send-scheduled-sms');
                 }
             }
         });
-        */
-
-        foreach (ScheduledMessage::all() as $msg) {
-            if ($msg->send_time && $msg->send_time->between(Carbon::now()->subMinutes(5),Carbon::now())) {
-                dispatch(new \App\Jobs\SendScheduledSms($msg))->onQueue('send-scheduled-sms');
-            }
-
-            // Delete the scheduled message;
-            $msg->delete();
-        }
     }
 }

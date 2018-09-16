@@ -42,9 +42,9 @@ class UploadContactsRequest extends FormRequest
     public function messages()
     {
         return [
-            'filename.mimetypes' => 'Only the following file extensions are allowed: .xls, .xlsx, csv, .txt or odds',
-            'filename.required' => 'Please Upload a file',
-            'filename.file' => 'Your file is not successfully uploaded'
+            'filename.mimetypes' => 'Only CSV, EXCEL or ODS file formats are allowed.',
+            'filename.required' => 'Please select a file to upload',
+            'filename.file' => 'There was a problem uploading your file. Please try again.'
         ];
     }
 }

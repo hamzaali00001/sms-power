@@ -35,10 +35,6 @@ class UploadContactsController extends Controller
             flash()->success('Your contacts are currently being processed.');
 
             dispatch(new UploadContacts($fileUpload, $group));
-        } else {
-            flash()->error('There was a problem uploading your file. Please try again.');
-
-            return back();
         }
 
         return redirect()->route('groups.contacts.index', $group);

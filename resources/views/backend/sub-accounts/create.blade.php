@@ -148,9 +148,5 @@
                 }
             }
         });
-
-        $('.select2').on('change', function() {
-            $(this).valid();
-        });
     </script>
 @endpush

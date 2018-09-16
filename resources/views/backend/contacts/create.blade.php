@@ -13,6 +13,13 @@
         </ol>
     </div>
 
+    @include('flash::message')
+    @if($errors->has('filename'))
+        <div class="alert alert-danger">
+            <span>{{$errors->first('filename')}}</span>
+        </div>
+    @endif
+
     <!-- Start Page Content -->
     <div class="sms_heading">
         <h3><i class="fa fa-at"></i> Add Contacts</h3>
@@ -22,7 +29,7 @@
         <div class="form-group group-title">
             <div class="col-md-12">
                 <ul class="sms_list">
-                    <li><i class="fa fa-circle-o"></i>Upload <strong>CSV, EXCEL</strong> or <strong>ODD</strong> files ONLY</li>
+                    <li><i class="fa fa-circle-o"></i>Upload <strong>CSV, EXCEL</strong> or <strong>ODS</strong> file formats <strong>ONLY</strong></li>
                     <li><i class="fa fa-circle-o"></i>The <strong>MOBILE</strong> field is mandatory i.e. must be filled</li>
                     <li><i class="fa fa-circle-o"></i><strong>MOBILE NUMBERS</strong> format should be like <strong>254722334455</strong></li>
                     <li><i class="fa fa-circle-o"></i>Leave the <strong>FIRST ROW</strong> field names (<strong>NAME</strong> &amp; <strong>MOBILE</strong>) intact</li>
@@ -42,7 +49,7 @@
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-9 col-md-6">
-                        <input type="file" class="filestyle" id="filename" name="filename" data-buttonText="Browse">
+                        <input type="file" class="filestyle" id="filename" name="filename" accept=".csv,.xls,.xlsx,.ods" data-buttonText="Browse">
                     </div>
                 </div>
                 <div class="form-actions fluid">
@@ -87,12 +94,6 @@
                 </div>
             </form>
         </div>
-        @include('flash::message')
-        @if($errors->has('filename'))
-            <div class="alert alert-danger">
-                <span>{{$errors->first('filename')}}</span>
-            </div>
-        @endif
     </div>
     <!-- End Page Content -->
 </div>

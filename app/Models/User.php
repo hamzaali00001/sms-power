@@ -253,7 +253,11 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getEmailVerifiedAtAttribute($value)
     {
-        return Carbon::parse($value)->format('d M Y, h:i A') ?? 'Not Yet';
+        if (!empty($value)) {
+            return Carbon::parse($value)->format('d M Y, h:i A');
+        }
+
+        return 'Not Yet';
     }
 
     /**

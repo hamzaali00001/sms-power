@@ -31,14 +31,7 @@ class UpdateContactRequest extends FormRequest
             'group_id' => 'required|integer|exists:groups,id',
             'active'=>'required|boolean',
             'mobile' => [
-                'required',
-                Rule::phone()->detect()->country('KE')->mobile(),
-                Rule::unique('contacts')
-                    ->ignore($this->contact->id)
-                    ->where(function ($query) {
-                        return $query->where('group_id', $this->group->id)
-                            ->where('user_id', Auth::user()->id);
-                    })
+                'required'
             ]
         ];
     }

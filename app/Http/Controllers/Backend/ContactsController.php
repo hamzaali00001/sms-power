@@ -8,7 +8,6 @@ use App\Http\Requests\Backend\Contacts\UpdateContactRequest;
 use App\Models\Contact;
 use App\Models\Group;
 use Illuminate\Http\Request;
-use Propaganistas\LaravelPhone\Exceptions\CountryCodeException;
 use Propaganistas\LaravelPhone\Exceptions\NumberParseException;
 use Propaganistas\LaravelPhone\PhoneNumber;
 
@@ -77,7 +76,7 @@ class ContactsController extends Controller
         $user_group_contacts = Contact::where('group_id', $group->id)->get()->pluck('mobile')->toArray();
 
         if (in_array($request->get('full_phone'), $user_group_contacts)) {
-            
+
             flash()->error("{$request->get('mobile')} already exists in this group.");
 
             return back();
@@ -118,6 +117,42 @@ class ContactsController extends Controller
      */
     public function update(UpdateContactRequest $request, Group $group, Contact $contact)
     {
+        try {
+            // Validate that the number is a mobile number
+            if ((!PhoneNumber::make($request->get('mobile'))->isOfType('mobile'))) {
+
+                flash()->error("{$request->get('mobile')} is not a valid mobile number.");
+
+                return back();
+            }
+
+            // Validate that the mobile number is of the given country - Kenya
+            if (!PhoneNumber::make($request->get('mobile'))->isOfCountry('KE')) {
+
+                flash()->error("{$request->get('mobile')} is not a valid Kenyan mobile number.");
+
+                return back();
+            }
+        } catch (NumberParseException $exception) {
+            flash()->error("{$request->get('mobile')} is not a valid number.");
+
+            return back();
+        }
+
+        // Check that the mobile number does not exist in that group.
+        $user_group_contacts = Contact::where('group_id', $group->id)
+            ->where('mobile', '!=', $request->get('mobile'))
+            ->get()
+            ->pluck('mobile')
+            ->toArray();
+
+        if (in_array($request->get('full_phone'), $user_group_contacts)) {
+
+            flash()->error("{$request->get('mobile')} already exists in this group.");
+
+            return back();
+        }
+
         $contact->update([
             'user_id' => auth()->user()->id,
             'group_id' => $group->id,

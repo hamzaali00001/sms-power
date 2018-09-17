@@ -155,16 +155,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Determine if the user has verified their email address.
-     *
-     * @return bool
-     */
-    public function hasVerifiedEmail()
-    {
-        return ! is_null($this->getOriginal('email_verified_at'));
-    }
-
-    /**
      * Get the user's name.
      *
      * @param string $value
@@ -246,6 +236,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Determine if the user has verified their email address.
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->getOriginal('email_verified_at'));
+    }
+
+    /**
      * Get the verification date.
      *
      * @param  string $value
@@ -253,11 +253,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getEmailVerifiedAtAttribute($value)
     {
-        if (!empty($value)) {
-            return Carbon::parse($value)->format('d M Y, h:i A');
-        }
-
-        return 'Not Yet';
+        return Carbon::parse($value)->format('d M Y, h:i A') ?? 'Not Yet';
     }
 
     /**

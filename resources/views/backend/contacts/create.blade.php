@@ -33,7 +33,7 @@
                     <li><i class="fa fa-circle-o"></i>The <strong>MOBILE</strong> field is mandatory i.e. must be filled</li>
                     <li><i class="fa fa-circle-o"></i><strong>MOBILE NUMBERS</strong> format should be like <strong>254722334455</strong></li>
                     <li><i class="fa fa-circle-o"></i>Leave the <strong>FIRST ROW</strong> field names (<strong>NAME</strong> &amp; <strong>MOBILE</strong>) intact</li>
-                    <li><i class="fa fa-circle-o"></i><a href="{{ route('groups.contacts.sample') }}"><strong>CLICK HERE TO DOWNLOAD A SAMPLE CONTACTS FILE</strong></a></li>
+                    <li><i class="fa fa-circle-o"></i><a style="color: #00AFF1" href="{{ route('groups.contacts.sample') }}"><strong>CLICK HERE TO DOWNLOAD A SAMPLE CONTACTS FILE</strong></a></li>
                 </ul>
             </div>
         </div>

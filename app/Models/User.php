@@ -155,16 +155,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Determine if the user has verified their email address.
-     *
-     * @return bool
-     */
-    public function hasVerifiedEmail()
-    {
-        return ! is_null($this->getOriginal('email_verified_at'));
-    }
-
-    /**
      * Get the user's name.
      *
      * @param string $value
@@ -243,6 +233,16 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return 'N/A';
+    }
+
+    /**
+     * Determine if the user has verified their email address.
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->getOriginal('email_verified_at'));
     }
 
     /**

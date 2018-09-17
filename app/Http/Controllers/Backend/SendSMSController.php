@@ -41,8 +41,10 @@ class SendSMSController extends Controller
      */
     public function singleSMS()
     {
-        // Check user credit balance
-        $this->checkBalance();
+        // Check user credit balance and if not sufficient Redirect
+        if (!is_null($shouldRedirect = $this->checkBalance())) {
+            return $shouldRedirect;
+        }
 
         if (request('schedule') === 'No') {
             SentMessage::create([
@@ -100,8 +102,10 @@ class SendSMSController extends Controller
      */
     public function bulkSMS()
     {
-       // Check user credit balance
-        $this->checkBalance();
+        // Check user credit balance and if not sufficient Redirect
+        if (!is_null($shouldRedirect = $this->checkBalance())) {
+            return $shouldRedirect;
+        }
 
         if (request('schedule') === 'No') {
             $recipients = Contact::where('group_id', request('to'))->pluck('mobile')->toArray();

@@ -10,6 +10,7 @@
                 <input type="hidden" name="_method" value="PUT">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+                <input type="hidden" name="group_id" value="{{ $group->id }}">
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="control-label">Contact Name</label>
@@ -20,7 +21,7 @@
                         <input type="tel" id="mobile" name="mobile" class="form-control mobile">
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Contact Status</label>
+                        <label class="control-label" for="active">Contact Status</label>
                         <select name="active" id="active" class="form-control select2">
                             <option value="1">Active</option>
                             <option value="0">Blacklisted</option>

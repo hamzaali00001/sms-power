@@ -11,8 +11,14 @@
             <li class="active">{{ $group->name }}</li>
         </ol>
     </div>
-
     @include('flash::message')
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            @foreach($errors->all() as $error)
+                {{ $error }} <br>
+            @endforeach
+        </div>
+    @endif
 
     <!-- Start Page Content -->
     <div class="sms_heading">
@@ -61,7 +67,7 @@
         <div class="clearfix10"></div>
         <p>No Contacts Available</p>
     @endif
-    <!-- End Page Content -->  
+    <!-- End Page Content -->
 </div>
 @stop
 
@@ -87,16 +93,22 @@
         });
 
         $("#edit").on('shown.bs.modal', function(e) {
-            let name = $(e.relatedTarget).data("name")
-            let mobile = $(e.relatedTarget).data("mobile")
-            let active = $(e.relatedTarget).data("active")
+            let name = $(e.relatedTarget).data("name");
+            let mobile = $(e.relatedTarget).data("mobile");
+            let active = $(e.relatedTarget).data("active");
+            if (active === 'Yes') {
+                active = 1;
+            } else {
+                active = 0;
+            }
+            $('#active').val(active).trigger('change.select2');
 
-            let form = $('#edit-contact')
-            
-            form.find('#name').val(name)
-            form.find('#mobile').val(mobile)
-            form.find('#active').val(active)
-            form.attr('action', $(e.relatedTarget).data("form-action"))
+            let form = $('#edit-contact');
+
+            form.find('#name').val(name);
+            form.find('#mobile').val(mobile);
+            console.log(active);
+            form.attr('action', $(e.relatedTarget).data("form-action"));
         });
     </script>
 @endpush

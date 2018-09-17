@@ -155,6 +155,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Determine if the user has verified their email address.
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail()
+    {
+        return ! is_null($this->getOriginal('email_verified_at'));
+    }
+
+    /**
      * Get the user's name.
      *
      * @param string $value
@@ -164,7 +174,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return ucwords(strtolower($value));
     }
-    
+
     /**
      * Set the user's name.
      *
@@ -186,7 +196,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return strtolower($value);
     }
-    
+
     /**
      * Set the user's email.
      *

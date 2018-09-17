@@ -20,7 +20,8 @@
                     </div>
                     <div class="col-xs-12">
                         <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label class="control-label" for="email">Enter the email address you registered your account with and we will send you an email on how to reset your password.</label>
+                            <div class="clearfix10"></div>
+                            <p>Enter your account email address below and we will send you an email with instructions on how to reset your password.</p>
                             <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}">
                             @if ($errors->has('email'))
                                 <span class="help-block"><strong>{{ $errors->first('email') }}</strong></span>

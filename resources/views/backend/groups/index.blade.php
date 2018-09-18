@@ -75,41 +75,45 @@
         });
 
         $("#edit").on('shown.bs.modal', function(e) {
-            let name = $(e.relatedTarget).data("name")
+            let name = $(e.relatedTarget).data("name");
 
-            let form = $('#edit-group')
+            let form = $('#edit-group');
             
-            form.find('#name').val(name)
-            form.attr('action', $(e.relatedTarget).data("form-action"))
+            form.find('#name').val(name);
+            form.attr('action', $(e.relatedTarget).data("form-action"));
         });
 
-        function validateForm() {
-            var x = document.forms["addGroupsForm"]["name"].value;
+        function validateForm(formName) {
+            let form = $('form[name=' + formName +']');
+            let x = form.find('[name=name]')[0].value;
             if (x == "") {
-                let element = document.getElementsByClassName('form-group')[0];
+                let element = form.find('.form-group')[0];
                 element.classList.add("has-error");
-                let span_lists = document.getElementsByClassName('help-block');
+                let span_lists = form.find('.help-bloc');
                 for(i=0; i<span_lists.length; i++){
                     $(span_lists[i]).remove();
                 }
-                $('<span class="help-block"><strong>The group name is required.</strong></span>').insertAfter("#name");
+                let after = form.find('.form-group input')[0];
+                $('<span class="help-block"><strong>The group name is required.</strong></span>').insertAfter(after);
                 return false;
             }
         }
 
-        function removeErrors(){
-            let x = document.forms["addGroupsForm"]["name"].value;
+        function removeErrors(formName) {
+            let form = $('form[name=' + formName + ']');
+            let x = form.find('[name=name]')[0].value;
             if (x) {
-               let element = document.getElementsByClassName('form-group')[0];
-               element.classList.remove("has-error"); 
-               $(".help-block").remove();
+                let element = form.find('.form-group')[0];
+                element.classList.remove("has-error");
+                form.find('.help-block').remove();
             }
         }
 
         $(".cancel_form").click(function(){
-            let element = document.getElementsByClassName('form-group')[0];
-            element.classList.remove("has-error"); 
-            $(".help-block").remove();
+            let form = $(this).closest('form');
+            let element = form.find('.form-group')[0];
+            element.classList.remove("has-error");
+            form.find('.help-block').remove();
         });
     </script>
 @endpush

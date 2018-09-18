@@ -89,10 +89,7 @@
             if (x == "") {
                 let element = form.find('.form-group')[0];
                 element.classList.add("has-error");
-                let span_lists = form.find('.help-bloc');
-                for(i=0; i<span_lists.length; i++){
-                    $(span_lists[i]).remove();
-                }
+                let span_lists = form.find('.help-bloc').remove();
                 let after = form.find('.form-group input')[0];
                 $('<span class="help-block"><strong>The group name is required.</strong></span>').insertAfter(after);
                 return false;
@@ -109,10 +106,10 @@
             }
         }
 
-        $(".cancel_form").click(function(){
-            let form = $(this).closest('form');
+        $("#edit, #create").on('hidden.bs.modal', function(e) {
+            let form = $(this);
             let element = form.find('.form-group')[0];
-            element.classList.remove("has-error");
+            element.classList.remove('has-error');
             form.find('.help-block').remove();
         });
     </script>

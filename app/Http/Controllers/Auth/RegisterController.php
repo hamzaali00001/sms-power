@@ -53,7 +53,7 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
             'mobile' => 'required|string|max:255|unique:users',
-            //'timezone' => 'required|timezone'
+            'timezone' => 'required|timezone'
         ]);
     }
 
@@ -70,7 +70,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'mobile' => $data['mobile'],
-            'timezone' => 'Africa/Nairobi',
+            'timezone' => $data['timezone']
         ]);
     }
 }

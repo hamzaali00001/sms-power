@@ -8,8 +8,10 @@
    	<div class="container-fluid">
 	   	<div class="row">
 	    	<div class="col-xs-12 col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4">
+                @include('flash::message')
 	        	<form class="form-horizontal form-bordered row" id="register" action="{{ route('register') }}" method="POST">
                     {{csrf_field()}}
+                    <input type="hidden" name="timezone" id="timezone">
                     <div class="form-actions col-xs-12">
                         <h3><i class="fa fa-edit"></i> Register Account</h3>
                     </div>
@@ -69,7 +71,16 @@
 @stop
 
 @section('scripts')
-    <script type="text/javascript" >
+    <script type="text/javascript">
+        $(function() {
+            // guess user timezone
+            $('#timezone').val(moment.tz.guess())
+        })
+
+        var tz = moment.tz.guess();
+
+        console.log(tz);
+    
         $("#register").validate({
             highlight: function(element) {
                 $(element).closest('.form-group').addClass('has-error');

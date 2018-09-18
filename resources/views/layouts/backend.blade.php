@@ -90,7 +90,7 @@
         <script type="text/javascript" src="{{ asset('js/backend/bootstrap-datetimepicker.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/jquery.mCustomScrollbar.concat.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/moment.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/moment-timezone.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/backend/moment-timezone-with-data.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/fullcalendar.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/select2.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/jquery.dataTables.js') }}"></script>

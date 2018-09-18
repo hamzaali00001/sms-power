@@ -89,7 +89,7 @@
             if (x == "") {
                 let element = form.find('.form-group')[0];
                 element.classList.add("has-error");
-                let span_lists = form.find('.help-bloc').remove();
+                form.find('.help-bloc').remove();
                 let after = form.find('.form-group input')[0];
                 $('<span class="help-block"><strong>The group name is required.</strong></span>').insertAfter(after);
                 return false;

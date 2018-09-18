@@ -107,8 +107,29 @@
 
             form.find('#name').val(name);
             form.find('#mobile').val(mobile);
-            console.log(active);
             form.attr('action', $(e.relatedTarget).data("form-action"));
+        });
+
+        function validateForm() {
+            let mobile = $("#mobile");
+            let tel = mobile.val();
+            if (tel == '') {
+                mobile.closest('.form-group').addClass('has-error').find('.help-block').remove();
+                $('<span class="help-block"><strong>The Mobile Number is required.</strong></span>').appendTo(mobile.closest('.form-group'));
+                return false;
+            }
+        }
+
+        function removeErrors() {
+            let mobile = $("#mobile");
+            let tel = mobile.val();
+            if (tel) {
+                mobile.closest('.form-group').removeClass('has-error').find('.help-block').remove();
+            }
+        }
+
+        $("#edit").on('hidden.bs.modal', function(e) {
+            $("#mobile").closest('.form-group').removeClass('has-error').find('.help-block').remove();
         });
     </script>
 @endpush

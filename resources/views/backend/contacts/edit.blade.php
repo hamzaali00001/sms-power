@@ -6,7 +6,7 @@
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
                 <h4 id="myModalLabel" class="modal-title"><i class="fa fa-edit"></i> Edit Contact</h4>
             </div>
-            <form id="edit-contact" method="POST">
+            <form id="edit-contact" method="POST" onsubmit="return validateForm()">
                 <input type="hidden" name="_method" value="PUT">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
@@ -18,7 +18,9 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">Mobile Number</label>
-                        <input type="tel" id="mobile" name="mobile" class="form-control mobile">
+                        <div>
+                            <input type="tel" id="mobile" name="mobile" class="form-control mobile" onkeyup="removeErrors()">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label" for="active">Contact Status</label>

@@ -24,7 +24,7 @@
                         <label class="control-label" for="active">Contact Status</label>
                         <select name="active" id="active" class="form-control select2">
                             <option value="1">Active</option>
-                            <option value="0">Blacklisted</option>
+                            <option value="0">Banned</option>
                         </select>
                     </div>
                 </div>

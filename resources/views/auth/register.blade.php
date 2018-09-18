@@ -41,15 +41,6 @@
                         </div>
                     </div>
                     <div class="col-xs-12">
-                        <div class="form-group {{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                            <label class="control-label" for="password_confirmation">Confirm Password:</label>
-                            <input type="password" name="password_confirmation" class="form-control" autocomplete="off">
-                            @if ($errors->has('password_confirmation'))
-                                <span class="help-block"><strong>{{ $errors->first('password_confirmation') }}</strong></span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
                         <div class="form-group {{ $errors->has('mobile') ? ' has-error' : '' }}">
                             <label class="control-label" for="mobile">Enter Mobile No:</label>
                             <input type="text" name="mobile" class="form-control" value="{{ old('mobile') }}">

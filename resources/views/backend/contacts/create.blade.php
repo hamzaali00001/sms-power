@@ -81,6 +81,9 @@
                         <input type="tel" id="mobile" name="mobile" class="form-control mobile" value="{{ old('mobile') }}">
                         <span id="valid-msg" class="help-block hide"><strong>✓ Valid</strong></span>
                         <span id="error-msg" class="help-block hide"><strong>Invalid number</strong></span>
+                        @if ($errors->has('mobile'))
+                            <span class="help-block"><strong>{{ $errors->first('mobile') }}</strong></span>
+                        @endif
                     </div>
                 </div>
                 <div class="form-actions fluid">

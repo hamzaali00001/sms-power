@@ -45,7 +45,7 @@
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script type="text/javascript" src="{{ asset('js/backend/bootstrap.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/moment.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/moment-timezone.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/backend/moment-timezone-with-data.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/jquery.validate.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/custom.js') }}"></script>
         @yield('scripts')

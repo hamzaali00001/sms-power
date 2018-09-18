@@ -72,15 +72,9 @@
 
 @section('scripts')
     <script type="text/javascript">
-        $(function() {
-            // guess user timezone
-            $('#timezone').val(moment.tz.guess())
-        })
+        //guess user timezone
+        $('#timezone').val(moment.tz.guess());
 
-        var tz = moment.tz.guess();
-
-        console.log(tz);
-    
         $("#register").validate({
             highlight: function(element) {
                 $(element).closest('.form-group').addClass('has-error');

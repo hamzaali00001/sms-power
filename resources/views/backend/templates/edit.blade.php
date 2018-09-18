@@ -18,6 +18,13 @@
                             <span class="help-block"><strong>{{ $errors->first('name') }}</strong></span>
                         @endif
                     </div>
+                    <div class="form-group">
+                        <label class="control-label">Message Placeholder</label>
+                        <select class="form-control select2 placeholder" id="placeholder" name="placeholder">
+                            <option value="">None</option>
+                            <option value="{name}">Name</option>
+                        </select>
+                    </div>
                     <div class="form-group {{ $errors->has('message') ? ' has-error' : '' }}">
                         <label class="control-label">Template Message</label>
                         <textarea class="form-control" rows="3" id="message" name="message" required></textarea>

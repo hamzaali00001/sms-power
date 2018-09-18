@@ -12,15 +12,15 @@
     </div>
 
     @include('flash::message')
-    
+
     <!-- Start Page Content -->
     <div class="sms_heading">
         <h3><i class="fa fa-file-text-o"></i> Templates</h3>
         <a data-target="#create" data-toggle="modal"><i class="fa fa-plus"></i> Add New</a>
         <a href="#delete" class="btn btn-danger" data-toggle="modal" id="sms_all"><i class="fa fa-trash-o"></i> Delete All</a>
     </div>
-            
-    @if (count($templates)) 
+
+    @if (count($templates))
         <table id="templates" class="table table-striped table-bordered" data-form="delete">
             <thead>
                 <tr>
@@ -63,7 +63,7 @@
         <div class="clearfix10"></div>
         <p>No Templates Available</p>
     @endif
-    <!-- End Page Content -->  
+    <!-- End Page Content -->
 </div>
 @stop
 
@@ -73,6 +73,11 @@
     @include('backend.templates.show')
     @include('backend.partials.delete-modal')
     <script>
+        let edit = $("#edit");
+        let create = $("#create");
+        let addTemplate = $("#addTemplate");
+        let editTemplate = $("#edit-template");
+
         $('#templates').DataTable({
             "order": [[ 4, "desc" ]]
         });
@@ -81,49 +86,27 @@
             let name = $(e.relatedTarget).data("name")
             let message = $(e.relatedTarget).data("message")
             let characters = $(e.relatedTarget).data("characters")
-            
+
             let form = $('#show-template')
-            
+
             form.find('#name').val(name)
             form.find('#message').val(message)
             form.find('#characters').val(characters)
         });
 
-        $("#edit").on('shown.bs.modal', function(e) {
+        edit.on('shown.bs.modal', function(e) {
             let name = $(e.relatedTarget).data("name")
             let message = $(e.relatedTarget).data("message")
 
             let form = $('#edit-template')
-            
+
             form.find('#name').val(name)
             form.find('#message').val(message)
             form.attr('action', $(e.relatedTarget).data("form-action"))
         });
 
-        $("#addTemplate").validate({
-            errorElement: 'span',
-            errorClass: 'help-block',
-            highlight: function (element, errorClass, validClass) {
-            $(element).addClass(errorClass);
-                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
-            },
-            unhighlight: function (element, errorClass, validClass) {
-            $(element).removeClass(errorClass);
-                $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
-            },
-            errorPlacement: function(error, element) {
-                if (element.parent('.input-group').length) {
-                    error.insertAfter(element.parent());
-                } else if (element.hasClass('select2')) {     
-                    error.insertAfter(element.next('span'))
-                } else {
-                    error.insertAfter(element);
-                }
-            }
-        });
-
-        $("#edit-template").validate({
-            errorElement: 'span',
+        let validation = {
+            errorElement: 'strong',
             errorClass: 'help-block',
             highlight: function (element, errorClass, validClass) {
                 $(element).addClass(errorClass);
@@ -142,6 +125,26 @@
                     error.insertAfter(element);
                 }
             }
+        };
+        addTemplate.validate(validation);
+        editTemplate.validate(validation);
+
+        create.on('hidden.bs.modal', function() {
+            addTemplate.validate().resetForm();
+            addTemplate.find('.has-error').removeClass('has-error')
+        });
+
+        edit.on('hidden.bs.modal', function() {
+            editTemplate.validate().resetForm();
+            editTemplate.find('.has-error').removeClass('has-error');
+        });
+
+        $('.placeholder').change(function() {
+            let textarea = $(this).closest('form').find('textarea');
+            if($(this).val()!=="") {
+                textarea.insertAtCaret('{name} ');
+            }
+            $(this).val('').prop('selected', true);
         });
     </script>
 @endpush

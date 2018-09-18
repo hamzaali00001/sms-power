@@ -98,10 +98,12 @@
             let name = $(e.relatedTarget).data("name")
             let message = $(e.relatedTarget).data("message")
 
-            let form = $('#edit-template')
+            let form = $('#edit-template');
 
-            form.find('#name').val(name)
-            form.find('#message').val(message)
+            form.find('#name').val(name);
+            form.find('#message').val(message);
+            form.find('#placeholder').val("").trigger('change.select2');
+
             form.attr('action', $(e.relatedTarget).data("form-action"))
         });
 
@@ -110,11 +112,11 @@
             errorClass: 'help-block',
             highlight: function (element, errorClass, validClass) {
                 $(element).addClass(errorClass);
-                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+                $(element).closest('.form-group').addClass('has-error');
             },
             unhighlight: function (element, errorClass, validClass) {
                 $(element).removeClass(errorClass);
-                $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                $(element).closest('.form-group').removeClass('has-error');
             },
             errorPlacement: function(error, element) {
                 if (element.parent('.input-group').length) {
@@ -139,12 +141,16 @@
             editTemplate.find('.has-error').removeClass('has-error');
         });
 
-        $('.placeholder').change(function() {
+        $('.placeholder').change(function () {
             let textarea = $(this).closest('form').find('textarea');
-            if($(this).val()!=="") {
-                textarea.insertAtCaret('{name} ');
+            textarea.val();
+
+            let text = textarea.val();
+            if (/{name}/.test(text)) {
+                textarea.val(text.replace(/{name}/, ''))
+            } else {
+                textarea.insertAtCaret('{name}');
             }
-            $(this).val('').prop('selected', true);
         });
     </script>
 @endpush

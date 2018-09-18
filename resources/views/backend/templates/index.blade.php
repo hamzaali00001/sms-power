@@ -121,5 +121,27 @@
                 }
             }
         });
+
+        $("#edit-template").validate({
+            errorElement: 'span',
+            errorClass: 'help-block',
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass(errorClass);
+                $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass(errorClass);
+                $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+            },
+            errorPlacement: function(error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else if (element.hasClass('select2')) {
+                    error.insertAfter(element.next('span'))
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
     </script>
 @endpush

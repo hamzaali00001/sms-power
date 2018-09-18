@@ -11,13 +11,20 @@
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <div class="modal-body">
-                    <div class="form-group">
+                    <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
                         <label class="control-label">Template Name</label>
-                        <input type="text" class="form-control" id="name" name="name">
+                        <input type="text" class="form-control" id="name" name="name" required>
+                        @if ($errors->has('name'))
+                            <span class="help-block"><strong>{{ $errors->first('name') }}</strong></span>
+                        @endif
                     </div>
-                    <div class="form-group">
+                    <div class="form-group {{ $errors->has('message') ? ' has-error' : '' }}">
                         <label class="control-label">Template Message</label>
-                        <textarea class="form-control" rows="3" id="message" name="message"></textarea>
+                        <textarea class="form-control" rows="3" id="message" name="message" required></textarea>
+
+                        @if ($errors->has('message'))
+                            <span class="help-block"><strong>{{ $errors->first('message') }}</strong></span>
+                        @endif
                     </div>
                 </div>
                 <div class="modal-footer">

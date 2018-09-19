@@ -22,7 +22,7 @@ a:focus { outline:none; }
 .clearfix15 { display:block; clear:both; height:15px; }
 .clearfix20 { display:block; clear:both; height:20px; }
 .clearfix30 { display:block; clear:both; height:30px; }
-body { font-size:13px; padding:60px 0px 40px 250px; }
+body { font-size:13px; padding:60px 0px 40px 250px; overflow-x: hidden }
 .navbar-default { position:fixed; top:0; left:0; right:0px; padding-right:30px; color: #bfe4f2; z-index:9; }
 .sms_balance { display:inline-block; font-family:'Roboto'; font-size:14px; padding:10px 10px 10px 30px; margin-top:10px; }
 body.sms_login { font-size:13px; padding:60px 0px 0px 0px; }

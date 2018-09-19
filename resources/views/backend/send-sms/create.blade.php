@@ -155,8 +155,8 @@
                         <textarea class="form-control" rows="5" id="message-single" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
                         <div class="row text-small">
                             <div class="col-xs-12">
-                                <span id="remaining"><strong class='blue'>160</strong> characters remaining</span>
-                                <span id="messages" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
+                                <span id="remaining-single"><strong class='blue'>160/160</strong> characters remaining</span>
+                                <span id="messages-single" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
                             </div>
                         </div>
                     </div>
@@ -276,10 +276,12 @@
         let counter = SmsCounter.count($(this).val());
         $('#remaining').find('.blue').text(counter.remaining + "/" + counter.per_message);
         $('#messages').find('.blue').text(counter.messages);
-
     });
     $('#message-single').keyup(function() {
         $('#template-single').val(0).trigger('change.select2');
+        let counter = SmsCounter.count($(this).val());
+        $('#remaining-single').find('.blue').text(counter.remaining + "/" + counter.per_message);
+        $('#messages-single').find('.blue').text(counter.messages);
     });
 </script>
 @endpush

@@ -108,8 +108,8 @@ class SendSMSController extends Controller
         }
 
         if (request('schedule') === 'No') {
-            $recipients = Contact::where('group_id', request('to'))->pluck('mobile')->toArray();
-            foreach ($recipients as $key => $value) {
+            $recipients = Contact::active()->where('group_id', request('to'))->pluck('mobile')->toArray();
+            foreach ($recipients->chunk(100) as $key => $value) {
                 SentMessage::create([
                     'user_id' => auth()->user()->id,
                     'from' => request('from'),
@@ -134,10 +134,11 @@ class SendSMSController extends Controller
         } 
 
         if (request('schedule') === 'Yes') {
+            $recipients = Contact::active()->where('group_id', request('to'))->pluck('mobile')->toArray();
             ScheduledMessage::create([
                 'user_id' => auth()->user()->id,
                 'from' => request('from'),
-                'recipients' => count(Contact::where('group_id',request('to'))->pluck('mobile')->toArray()),
+                'recipients' => count($recipients),
                 'message' => request('message') .' '. env('OPT_OUT'),
                 'msg_count' => $this->msgCount(),
                 'characters' => utf8_encode(strlen(request('message'))),
@@ -237,7 +238,7 @@ class SendSMSController extends Controller
     private function recipients()
     {
         if (request('type') === 'bulk') {
-            return $recipients = count(Contact::where('group_id', request('to'))->pluck('mobile'));
+            return $recipients = count(Contact::active()->where('group_id', request('to'))->pluck('mobile'));
         } elseif (request('type') === 'single') {
             return $recipients = 1;
         }

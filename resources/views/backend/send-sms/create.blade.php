@@ -103,7 +103,7 @@
                 </div>
                 @else
                 <div class="form-group">
-                    <input type="text" class="form-control" id="name" name="name" value="TIP: First Add Groups &amp; Contacts to send Bulk SMS." disabled>
+                    <input type="text" class="form-control" id="name" name="name" value="TIP: First add Groups &amp; Contacts to send Bulk SMS." disabled>
                 </div>
                 @endif                  
             </form>

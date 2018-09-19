@@ -47,8 +47,6 @@
                         </select>
                     </div>
                 </div>
-                @else 
-                <input type="hidden" name="from" value="{{ env('SENDER_ID') }}">
                 @endif
                 @if (count($templates))
                 <div class="form-group">
@@ -132,8 +130,6 @@
                         </select>
                     </div>
                 </div>
-                @else 
-                <input type="hidden" name="from" value="{{ env('SENDER_ID') }}">
                 @endif
                 @if (count($templates))
                 <div class="form-group">

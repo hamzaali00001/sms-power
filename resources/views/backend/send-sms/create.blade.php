@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="template">Template:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <select class="form-control select2" id="template" name="template" data-placeholder="Select Template">
+                        <select class="form-control select2" id="template-bulk" name="template" data-placeholder="Select Template">
                             <option value="0">None</option>
                             @foreach ($templates as $template)
                             <option value="{{ $template->id }}">{{ $template->name }}</option>
@@ -139,7 +139,7 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="template">Template:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <select class="form-control select2" id="template" name="template" data-placeholder="Select Template">
+                        <select class="form-control select2" id="template-single" name="template" data-placeholder="Select Template">
                             <option value="0">None</option>
                             @foreach ($templates as $template)
                             <option value="{{ $template->id }}">{{ $template->name }}</option>
@@ -149,6 +149,7 @@
                 </div>
                 @endif        
                 <div class="form-group">
+
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="message">Message:</label>
                     <div class=" col-xs-12 col-sm-9 col-md-9">
                         <textarea class="form-control" rows="5" id="message" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
@@ -268,6 +269,20 @@
               // }
             }
         });
+    });
+</script>
+<script type="text/javascript">
+    let templates = {!! $templates->toJson() !!}
+    $('#template-bulk, #template-single').change(function() {
+        let that = $(this);
+        let textarea = that.closest('form').find('textarea');
+        let index = that.prop('selectedIndex');
+        if (!index) {
+            textarea.val('');
+            return;
+        }
+        let message = templates[index-1]['message'];
+        textarea.val(message);
     });
 </script>
 @endpush

@@ -62,6 +62,7 @@ class SendSMSController extends Controller
 
             $sms->send([
                 'message' => request('message') .' '. env('OPT_OUT'),
+                'from' => request('from') ?? env('SENDER_ID'),
                 'to' => request('to'),
                 'enqueue' => 'true'
             ]);
@@ -126,6 +127,7 @@ class SendSMSController extends Controller
 
             $sms->send([
                 'message' => request('message') .' '. env('OPT_OUT'),
+                'from' => request('from') ?? env('SENDER_ID'),
                 'to' => $recipients,
                 'enqueue' => 'true'
             ]);

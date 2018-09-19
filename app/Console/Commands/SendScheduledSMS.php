@@ -80,6 +80,7 @@ class SendScheduledSMS extends Command
 
             $sms->send([
                 'message' => $msg->message,
+                'from' => $msg->from,
                 'to' => $to,
                 'enqueue' => 'true'
             ]);

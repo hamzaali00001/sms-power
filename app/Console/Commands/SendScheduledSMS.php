@@ -61,8 +61,8 @@ class SendScheduledSMS extends Command
 
             // Send bulk scheduled messages
             if (!is_null($msg->group_id)) {
-                $to = Contact::where('group_id', $msg->group_id)->pluck('mobile')->toArray();
-                foreach ($to as $key => $value) {
+                $to = Contact::active()->where('group_id', $msg->group_id)->pluck('mobile')->toArray();
+                foreach ($to->chunk(100) as $key => $value) {
                     SentMessage::create([
                         'user_id' => $msg->user_id,
                         'from' => $msg->from,

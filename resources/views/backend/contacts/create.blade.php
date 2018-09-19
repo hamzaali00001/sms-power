@@ -126,7 +126,10 @@
 
             var validateData = function () {
                 reset();
-                if ($.trim(mobile.val()) && mobile.intlTelInput("isValidNumber")) {
+                if ($.trim(mobile.val()) === '') {
+                    return false
+                }
+                if (mobile.intlTelInput("isValidNumber")) {
                     validMsg.removeClass("hide");
                     return false
                 }

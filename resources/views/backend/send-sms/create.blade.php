@@ -276,6 +276,7 @@
         let index = that.prop('selectedIndex');
         if (!index) {
             textarea.val('');
+            textarea.attr('id') === 'message-bulk' ? message_bulk($('#message-bulk')) : message_single($('#message-single'));
             return;
         }
         let message = templates[index-1]['message'];

@@ -2,6 +2,11 @@
 
 @section('title', 'SMS Reports')
 
+@section('css')
+<link href="{{ asset('css/backend/fullcalendar.css') }}" rel="stylesheet">
+<link href="{{ asset('css/backend/fullcalendar.print.css') }}" rel="stylesheet" media='print'>
+@stop
+
 @section('content')
 <div class="sms_container">
     <div class="breadcrumb-wrapper">
@@ -18,6 +23,8 @@
 @stop
 
 @push('scripts')
+    <script src="{{ asset('js/backend/moment.min.js') }}"></script>
+    <script src="{{ asset('js/backend/fullcalendar.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#calendar').fullCalendar({

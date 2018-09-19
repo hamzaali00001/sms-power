@@ -10,17 +10,13 @@
         <title>@yield('title')</title>
         <!-- Bootstrap -->
         <link id="siteicon" rel="shortcut icon" type="images/favicon" href="{{ asset('img/backend/favicon.ico') }}">
-        <link href="{{ asset('css/backend/bootstrap-datetimepicker.css') }}" rel="stylesheet">
         <link href="{{ asset('css/backend/bootstrap.css') }}" rel="stylesheet">
         <link href="{{ asset('css/backend/font-awesome.css') }}" rel="stylesheet">
         <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900' rel='stylesheet'>
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet'>
         <link href="{{ asset('css/backend/jquery.mCustomScrollbar.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/backend/fullcalendar.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/backend/fullcalendar.print.css') }}" rel="stylesheet" media='print'>
-        <link href="{{ asset('css/backend/dataTables.bootstrap.css') }}" rel="stylesheet">
         <link href="{{ asset('css/backend/select2.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/backend/intlTelInput.min.css') }}" rel="stylesheet">
+        @yield('css')
     	<link href="{{ asset('css/backend/site.css') }}" rel="stylesheet">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -87,20 +83,11 @@
         <script type="text/javascript" src="{{ asset('js/backend/jquery.min.js') }}"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script type="text/javascript" src="{{ asset('js/backend/bootstrap.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/bootstrap-datetimepicker.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/jquery.mCustomScrollbar.concat.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/moment.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/moment-timezone-with-data.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/fullcalendar.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/select2.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/jquery.dataTables.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/dataTables.bootstrap.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/bootstrap-filestyle.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/jquery.validate.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/intlTelInput.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/custom.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/sms_counter.js') }}"></script>
         @stack('scripts')
+        <script type="text/javascript" src="{{ asset('js/backend/custom.js') }}"></script>
         <script>
             $('div.alert').not('.alert-important').delay(5000).fadeOut(500);
         </script>

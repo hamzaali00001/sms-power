@@ -2,6 +2,10 @@
 
 @section('title', 'Templates')
 
+@section('css')
+<link href="{{ asset('css/backend/dataTables.bootstrap.css') }}" rel="stylesheet">
+@stop
+
 @section('content')
 <div class="sms_container">
     <div class="breadcrumb-wrapper">
@@ -72,6 +76,8 @@
     @include('backend.templates.edit')
     @include('backend.templates.show')
     @include('backend.partials.delete-modal')
+    <script src="{{ asset('js/backend/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('js/backend/dataTables.bootstrap.js') }}"></script>
     <script>
         let edit = $("#edit");
         let create = $("#create");

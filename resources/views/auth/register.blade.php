@@ -71,6 +71,8 @@
 @stop
 
 @section('scripts')
+    <script src="{{ asset('js/backend/moment.min.js') }}"></script>
+    <script src="{{ asset('js/backend/moment-timezone-with-data.min.js') }}"></script>
     <script type="text/javascript">
         //guess user timezone
         $('#timezone').val(moment.tz.guess());

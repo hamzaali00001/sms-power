@@ -2,6 +2,10 @@
 
 @section('title', 'Groups')
 
+@section('css')
+<link href="{{ asset('css/backend/dataTables.bootstrap.css') }}" rel="stylesheet">
+@stop
+
 @section('content')
 <div class="sms_container">
     <div class="breadcrumb-wrapper">
@@ -69,6 +73,8 @@
     @include('backend.groups.create')
     @include('backend.groups.edit')
     @include('backend.partials.delete-modal')
+    <script src="{{ asset('js/backend/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('js/backend/dataTables.bootstrap.js') }}"></script>
     <script>
         $('#groups').DataTable({
             "order": [[ 4, "desc" ]]

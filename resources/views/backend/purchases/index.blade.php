@@ -2,6 +2,10 @@
 
 @section('title', 'Credit Purchases')
 
+@section('css')
+<link href="{{ asset('css/backend/dataTables.bootstrap.css') }}" rel="stylesheet">
+@stop
+
 @section('content')
 <div class="sms_container">
     <div class="breadcrumb-wrapper">
@@ -61,4 +65,6 @@
 
 @push('scripts')
     @include('backend.partials.delete-modal')
+    <script src="{{ asset('js/backend/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('js/backend/dataTables.bootstrap.js') }}"></script>
 @endpush

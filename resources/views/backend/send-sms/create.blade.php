@@ -2,6 +2,11 @@
 
 @section('title', 'Send Message')
 
+@section('css')
+<link href="{{ asset('css/backend/bootstrap-datetimepicker.css') }}" rel="stylesheet">
+<link href="{{ asset('css/backend/intlTelInput.min.css') }}" rel="stylesheet">
+@stop
+
 @section('content')
 <div class="sms_container">
     <div class="sms_heading">
@@ -201,144 +206,147 @@
 @stop
 
 @push('scripts')
-<script>
-    var mobile = $("#to"),
-        errorMsg = $("#error-msg"),
-        validMsg = $("#valid-msg");
+    <script src="{{ asset('js/backend/bootstrap-datetimepicker.js') }}"></script>
+    <script src="{{ asset('js/backend/intlTelInput.min.js') }}"></script>
+    <script src="{{ asset('js/backend/sms_counter.js') }}"></script>
+    <script>
+        var mobile = $("#to"),
+            errorMsg = $("#error-msg"),
+            validMsg = $("#valid-msg");
 
-    var reset = function() {
-        mobile.removeClass("error");
-        errorMsg.addClass("hide");
-        validMsg.addClass("hide");
-    };
+        var reset = function() {
+            mobile.removeClass("error");
+            errorMsg.addClass("hide");
+            validMsg.addClass("hide");
+        };
 
-    mobile.intlTelInput({
-        autoPlaceholder: true,
-        nationalMode: true,
-        initialCountry: "ke",
-        utilsScript: "../../../../js/backend/utils.js",
-        placeholderNumberType: 'MOBILE',
-        hiddenInput: "full_phone",
-    });
+        mobile.intlTelInput({
+            autoPlaceholder: true,
+            nationalMode: true,
+            initialCountry: "ke",
+            utilsScript: "../../../../js/backend/utils.js",
+            placeholderNumberType: 'MOBILE',
+            hiddenInput: "full_phone",
+        });
 
-    var validateData = function () {
-        reset();
-        if ($.trim(mobile.val()) && mobile.intlTelInput("isValidNumber")) {
-            validMsg.removeClass("hide");
-            return false
-        }
-        mobile.addClass("error");
-        errorMsg.removeClass("hide");
-        return true;
-    };
+        var validateData = function () {
+            reset();
+            if ($.trim(mobile.val()) && mobile.intlTelInput("isValidNumber")) {
+                validMsg.removeClass("hide");
+                return false
+            }
+            mobile.addClass("error");
+            errorMsg.removeClass("hide");
+            return true;
+        };
 
-    mobile.blur(validateData);
+        mobile.blur(validateData);
 
-    // on keyup / change flag: reset
-    mobile.on("keyup change", reset);
+        // on keyup / change flag: reset
+        mobile.on("keyup change", reset);
 
-    $("#create-contact").submit(function(e) {
-        if (validateData()) {
-            e.preventDefault();
-        }
-    });
+        $("#create-contact").submit(function(e) {
+            if (validateData()) {
+                e.preventDefault();
+            }
+        });
 
-    $("#single-sms").validate({
-        errorElement: 'strong',
-        errorClass: 'help-block',
-        highlight: function(element, errorClass, validClass) {
-            $(element).addClass(errorClass);
-            $(element).closest('.form-group').addClass('has-error');
-        },
-        unhighlight: function(element, errorClass, validClass) {
-            $(element).removeClass(errorClass);
-            $(element).closest('.form-group').removeClass('has-error');
-        },
-        rules: {
-            to: {
-                required: true
+        $("#single-sms").validate({
+            errorElement: 'strong',
+            errorClass: 'help-block',
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass(errorClass);
+                $(element).closest('.form-group').addClass('has-error');
             },
-            message: {
-                required: true
-            }
-        },
-        errorPlacement: function(error, element) {
-            if(element.parent('.input-group').length) {
-                error.insertAfter(element.parent());
-            } else if (element.hasClass('select2')) {
-                error.insertAfter(element.next('span'))
-            } else {
-                error.insertAfter(element);
-            }
-        }
-    });
-    $("#bulk-sms").validate({
-        highlight: function(element) {
-            $(element).closest('.form-group').addClass('has-error');
-        },
-        unhighlight: function(element) {
-            $(element).closest('.form-group').removeClass('has-error');
-        },
-        errorElement: 'span',
-        errorClass: 'help-block',
-        rules: {
-            recipients: {
-                required: true
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass(errorClass);
+                $(element).closest('.form-group').removeClass('has-error');
             },
-            message: {
-                required: true,
+            rules: {
+                to: {
+                    required: true
+                },
+                message: {
+                    required: true
+                }
+            },
+            errorPlacement: function(error, element) {
+                if(element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else if (element.hasClass('select2')) {
+                    error.insertAfter(element.next('span'))
+                } else {
+                    error.insertAfter(element);
+                }
             }
-        },
-        errorPlacement: function(error, element) {
-            if(element.parent('.input-group').length) {
-                error.insertAfter(element.parent());
-            } else {
-                error.insertAfter(element);
+        });
+        $("#bulk-sms").validate({
+            highlight: function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            rules: {
+                recipients: {
+                    required: true
+                },
+                message: {
+                    required: true,
+                }
+            },
+            errorPlacement: function(error, element) {
+                if(element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
             }
+        });
+    </script>
+    <script type="text/javascript">
+        $(".form_datetime").datetimepicker({
+            format: "dd MM yyyy hh:ii",
+            autoclose: true,
+            minuteStep: 5,
+            pickerPosition: "top-left",
+            startDate: new Date()
+        });
+    </script>
+    <script type="text/javascript">
+        function message_bulk(that) {
+            let counter = SmsCounter.count(that.val());
+            $('#remaining').find('.blue').text(counter.remaining + "/" + counter.per_message);
+            $('#messages').find('.blue').text(counter.messages);
         }
-    });
-</script>
-<script type="text/javascript">
-    $(".form_datetime").datetimepicker({
-        format: "dd MM yyyy hh:ii",
-        autoclose: true,
-        minuteStep: 5,
-        pickerPosition: "top-left",
-        startDate: new Date()
-    });
-</script>
-<script type="text/javascript">
-    function message_bulk(that) {
-        let counter = SmsCounter.count(that.val());
-        $('#remaining').find('.blue').text(counter.remaining + "/" + counter.per_message);
-        $('#messages').find('.blue').text(counter.messages);
-    }
-    function message_single(that) {
-        let counter = SmsCounter.count(that.val());
-        $('#remaining-single').find('.blue').text(counter.remaining + "/" + counter.per_message);
-        $('#messages-single').find('.blue').text(counter.messages);
-    }
-    let templates = {!! $templates->toJson() !!}
-    $('#template-bulk, #template-single').change(function() {
-        let that = $(this);
-        let textarea = that.closest('form').find('textarea');
-        let index = that.prop('selectedIndex');
-        if (!index) {
-            textarea.val('');
+        function message_single(that) {
+            let counter = SmsCounter.count(that.val());
+            $('#remaining-single').find('.blue').text(counter.remaining + "/" + counter.per_message);
+            $('#messages-single').find('.blue').text(counter.messages);
+        }
+        let templates = {!! $templates->toJson() !!}
+        $('#template-bulk, #template-single').change(function() {
+            let that = $(this);
+            let textarea = that.closest('form').find('textarea');
+            let index = that.prop('selectedIndex');
+            if (!index) {
+                textarea.val('');
+                textarea.attr('id') === 'message-bulk' ? message_bulk($('#message-bulk')) : message_single($('#message-single'));
+                return;
+            }
+            let message = templates[index-1]['message'];
+            textarea.val(message);
             textarea.attr('id') === 'message-bulk' ? message_bulk($('#message-bulk')) : message_single($('#message-single'));
-            return;
-        }
-        let message = templates[index-1]['message'];
-        textarea.val(message);
-        textarea.attr('id') === 'message-bulk' ? message_bulk($('#message-bulk')) : message_single($('#message-single'));
-    });
-    $('#message-bulk').keyup(function() {
-        $('#template-bulk').val(0).trigger('change.select2');
-        message_bulk($(this));
-    });
-    $('#message-single').keyup(function() {
-        $('#template-single').val(0).trigger('change.select2');
-        message_single($(this));
-    });
-</script>
+        });
+        $('#message-bulk').keyup(function() {
+            $('#template-bulk').val(0).trigger('change.select2');
+            message_bulk($(this));
+        });
+        $('#message-single').keyup(function() {
+            $('#template-single').val(0).trigger('change.select2');
+            message_single($(this));
+        });
+    </script>
 @endpush

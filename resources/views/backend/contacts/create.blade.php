@@ -2,6 +2,10 @@
 
 @section('title', 'Add Contacts')
 
+@section('css')
+<link href="{{ asset('css/backend/intlTelInput.min.css') }}" rel="stylesheet">
+@stop
+
 @section('content')
 <div class="sms_container">
     <div class="breadcrumb-wrapper">
@@ -103,6 +107,9 @@
 @stop
 
 @push('scripts')
+    <script src="{{ asset('js/backend/bootstrap-filestyle.js') }}"></script>
+    <script src="{{ asset('js/backend/intlTelInput.min.js') }}"></script>
+    <script src="{{ asset('js/backend/simpleUpload.js') }}"></script>
     <script>
         $(document).ready(function () {
             var mobile = $("#mobile"),
@@ -126,10 +133,7 @@
 
             var validateData = function () {
                 reset();
-                if ($.trim(mobile.val()) === '') {
-                    return false
-                }
-                if (mobile.intlTelInput("isValidNumber")) {
+                if ($.trim(mobile.val()) && mobile.intlTelInput("isValidNumber")) {
                     validMsg.removeClass("hide");
                     return false
                 }

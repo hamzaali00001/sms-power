@@ -66,7 +66,7 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="message">Message:</label>
                     <div class=" col-xs-12 col-sm-9 col-md-9">
-                        <textarea class="form-control" rows="5" id="message-bulk" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
+                        <textarea class="form-control" rows="4" id="message-bulk" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
                         <div class="row text-small">
                             <div class="col-xs-12">
                                 <span id="remaining"><strong class='blue'>160/160</strong> characters remaining</span>
@@ -152,7 +152,7 @@
 
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="message">Message:</label>
                     <div class=" col-xs-12 col-sm-9 col-md-9">
-                        <textarea class="form-control" rows="5" id="message-single" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
+                        <textarea class="form-control" rows="4" id="message-single" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
                         <div class="row text-small">
                             <div class="col-xs-12">
                                 <span id="remaining-single"><strong class='blue'>160/160</strong> characters remaining</span>

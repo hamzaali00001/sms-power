@@ -117,7 +117,12 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to">Recipient:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <input id="to" class="form-control" name="to" type="text" value="{{ old('to') }}">
+                        <input type="tel" id="to" name="to" class="form-control mobile" value="{{ old('to') }}">
+                        <span id="valid-msg" class="help-block hide"><strong>✓ Valid</strong></span>
+                        <span id="error-msg" class="help-block hide"><strong>Invalid number</strong></span>
+                        @if ($errors->has('mobile'))
+                            <span class="help-block"><strong>{{ $errors->first('to') }}</strong></span>
+                        @endif
                     </div>
                 </div>
                 @if (count($senderids))
@@ -196,6 +201,47 @@
 
 @push('scripts')
 <script>
+    var mobile = $("#to"),
+        errorMsg = $("#error-msg"),
+        validMsg = $("#valid-msg");
+
+    var reset = function() {
+        mobile.removeClass("error");
+        errorMsg.addClass("hide");
+        validMsg.addClass("hide");
+    };
+
+    mobile.intlTelInput({
+        autoPlaceholder: true,
+        nationalMode: true,
+        initialCountry: "ke",
+        utilsScript: "../../../../js/backend/utils.js",
+        placeholderNumberType: 'MOBILE',
+        hiddenInput: "full_phone",
+    });
+
+    var validateData = function () {
+        reset();
+        if ($.trim(mobile.val()) && mobile.intlTelInput("isValidNumber")) {
+            validMsg.removeClass("hide");
+            return false
+        }
+        mobile.addClass("error");
+        errorMsg.removeClass("hide");
+        return true;
+    };
+
+    mobile.blur(validateData);
+
+    // on keyup / change flag: reset
+    mobile.on("keyup change", reset);
+
+    $("#create-contact").submit(function(e) {
+        if (validateData()) {
+            e.preventDefault();
+        }
+    });
+
     $("#single-sms").validate({
         errorElement: 'strong',
         errorClass: 'help-block',

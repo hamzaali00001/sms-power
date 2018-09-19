@@ -118,7 +118,7 @@
                         <input type="tel" id="to" name="to" class="form-control mobile" value="{{ old('to') }}">
                         <span id="valid-msg" class="help-block hide"><strong>✓ Valid</strong></span>
                         <span id="error-msg" class="help-block hide"><strong>Invalid number</strong></span>
-                        @if ($errors->has('mobile'))
+                        @if ($errors->has('to'))
                             <span class="help-block"><strong>{{ $errors->first('to') }}</strong></span>
                         @endif
                     </div>
@@ -251,7 +251,7 @@
             $(element).closest('.form-group').removeClass('has-error');
         },
         rules: {
-            recipient: {
+            to: {
                 required: true
             },
             message: {

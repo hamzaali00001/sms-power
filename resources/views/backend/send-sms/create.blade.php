@@ -22,12 +22,11 @@
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <input type="hidden" name="type" value="bulk">
-                <input type="hidden" name="status" value="{{ config('smspower.msg_status.info') }}">
                 @if (count($groups))
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to">Recipients:</label>
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="recipients">Recipients:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <select class="select2 form-control" id="to" name="to" data-placeholder="Select Group">
+                        <select class="select2 form-control" id="recipients" name="recipients" data-placeholder="Select Group">
                             <option></option>
                             @foreach ($groups as $group)
                             <option value="{{ $group->id }}">{{ $group->name }} - ({{ $group->contacts->count() }} contacts)</option>
@@ -113,7 +112,6 @@
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <input type="hidden" name="type" value="single">
-                <input type="hidden" name="status" value="{{ config('smspower.msg_status.info') }}">
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to">Recipient:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
@@ -154,7 +152,6 @@
                 </div>
                 @endif
                 <div class="form-group">
-
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="message">Message:</label>
                     <div class=" col-xs-12 col-sm-9 col-md-9">
                         <textarea class="form-control" rows="4" id="message-single" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>

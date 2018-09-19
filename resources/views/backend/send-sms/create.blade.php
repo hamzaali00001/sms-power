@@ -13,11 +13,11 @@
     <!-- Start Page Content -->
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#bulk-sms" aria-controls="bulk-sms" role="tab" data-toggle="tab"><i class="fa fa-table blue"></i> Bulk SMS </a></li>
-        <li role="presentation"><a href="#single-sms" aria-controls="single-sms" role="tab" data-toggle="tab"><i class="fa fa-file-o blue"></i> Single SMS</a></li>
+        <li role="presentation" class="active"><a href="#bulk-sms-modal" aria-controls="bulk-sms" role="tab" data-toggle="tab"><i class="fa fa-table blue"></i> Bulk SMS </a></li>
+        <li role="presentation"><a href="#single-sms-modal" aria-controls="single-sms" role="tab" data-toggle="tab"><i class="fa fa-file-o blue"></i> Single SMS</a></li>
     </ul>
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active">
+        <div role="tabpanel" class="tab-pane active" id="bulk-sms-modal">
             <form action="{{ route('bulk-sms') }}" class="form-horizontal form-bordered" id="bulk-sms" method="POST">
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
@@ -108,7 +108,7 @@
                 @endif
             </form>
         </div>
-        <div role="tabpanel" class="tab-pane">
+        <div role="tabpanel" class="tab-pane" id="single-sms-modal">
             <form action="{{ route('single-sms') }}" class="form-horizontal form-bordered" id="single-sms" method="POST">
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">

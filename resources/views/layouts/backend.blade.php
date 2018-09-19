@@ -100,6 +100,7 @@
         <script type="text/javascript" src="{{ asset('js/backend/jquery.smscharcount.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/intlTelInput.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/custom.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/backend/sms_counter.js') }}"></script>
         @stack('scripts')
         <script>
             $('div.alert').not('.alert-important').delay(5000).fadeOut(500);

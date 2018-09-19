@@ -69,8 +69,8 @@
                         <textarea class="form-control" rows="5" id="message-bulk" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
                         <div class="row text-small">
                             <div class="col-xs-12">
-                                <span id="remaining"><strong class='blue'>160</strong> characters remaining</span>
-                                <span id="messages" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
+                                <span id="remaining"><strong class='blue'>160/160</strong> characters remaining</span>
+                                <span id="messages" class="pull-right"><strong class='blue'>0</strong> message(s)</span>
                             </div>
                         </div>
                     </div>
@@ -259,21 +259,6 @@
     });
 </script>
 <script type="text/javascript">
-    $(function(){
-        $('textarea#sms_body').smsCharCount({
-            onUpdate: function(data){
-              // The 'data' object passed into this callback will contain something like the following
-              // {
-              //   charCount: 4
-              //   charRemaining: 156
-              //   messageCount: 1
-              //   isUnicode: false
-              // }
-            }
-        });
-    });
-</script>
-<script type="text/javascript">
     let templates = {!! $templates->toJson() !!}
     $('#template-bulk, #template-single').change(function() {
         let that = $(this);
@@ -288,6 +273,10 @@
     });
     $('#message-bulk').keyup(function() {
         $('#template-bulk').val(0).trigger('change.select2');
+        let counter = SmsCounter.count($(this).val());
+        $('#remaining').find('.blue').text(counter.remaining + "/" + counter.per_message);
+        $('#messages').find('.blue').text(counter.messages);
+
     });
     $('#message-single').keyup(function() {
         $('#template-single').val(0).trigger('change.select2');

@@ -27,8 +27,14 @@
                     </div>
                     <div class="form-group {{ $errors->has('message') ? ' has-error' : '' }}">
                         <label class="control-label">Template Message</label>
-                        <textarea class="form-control" rows="3" id="message" name="message" required></textarea>
+                        <textarea class="form-control" rows="3" id="message-edit" name="message" required></textarea>
 
+                        <div class="row text-small">
+                            <div class="col-xs-12">
+                                <span id="remaining-edit"><strong class='blue'>160/160</strong> characters</span>
+                                <span id="messages-edit" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
+                            </div>
+                        </div>
                         @if ($errors->has('message'))
                             <span class="help-block"><strong>{{ $errors->first('message') }}</strong></span>
                         @endif

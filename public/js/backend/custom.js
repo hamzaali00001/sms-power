@@ -193,18 +193,6 @@ jQuery(document).ready(function() {
     });
    /* ------------- End Select JS ------------- */
 
-   /* ------------- Start TextArea JS ------------- */
-	var $remaining = $('#remaining'),
-    $messages = $remaining.next();
-	$('#message').keyup(function(){
-    var chars = this.value.length,
-        messages = Math.ceil(chars / 160),
-        remaining = messages * 160 - (chars % (messages * 160) || messages * 160);
-    $remaining.html("<strong class='blue'>" + remaining + "</strong> characters remaining");
-    $messages.html("<strong class='blue'>" + messages + "</strong> message(s)");
-	});
-   /* ------------- Start TextArea JS ------------- */
-	
    /* ------------- Start SMS Later JS ------------- */
 	jQuery('.sms_later').hide();
 	jQuery('form#admin-contact').click(function() {								  

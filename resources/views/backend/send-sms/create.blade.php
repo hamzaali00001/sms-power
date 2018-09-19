@@ -115,12 +115,16 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to">Recipient:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <input type="tel" id="to" name="to" class="form-control mobile" value="{{ old('to') }}">
-                        <span id="valid-msg" class="help-block hide"><strong>✓ Valid</strong></span>
-                        <span id="error-msg" class="help-block hide"><strong>Invalid number</strong></span>
-                        @if ($errors->has('to'))
-                            <span class="help-block"><strong>{{ $errors->first('to') }}</strong></span>
-                        @endif
+                        <div>
+                            <input type="tel" id="to" name="to" class="form-control mobile" value="{{ old('to') }}">
+                        </div>
+                        <div>
+                            <span id="valid-msg" class="help-block hide"><strong>✓ Valid</strong></span>
+                            <span id="error-msg" class="help-block hide"><strong>Invalid number</strong></span>
+                            @if ($errors->has('to'))
+                                <span class="help-block"><strong>{{ $errors->first('to') }}</strong></span>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 @if (count($senderids))
@@ -246,7 +250,7 @@
             $(element).addClass(errorClass);
             $(element).closest('.form-group').addClass('has-error');
         },
-        unhighlight: function(element) {
+        unhighlight: function(element, errorClass, validClass) {
             $(element).removeClass(errorClass);
             $(element).closest('.form-group').removeClass('has-error');
         },
@@ -261,6 +265,8 @@
         errorPlacement: function(error, element) {
             if(element.parent('.input-group').length) {
                 error.insertAfter(element.parent());
+            } else if (element.hasClass('select2')) {
+                error.insertAfter(element.next('span'))
             } else {
                 error.insertAfter(element);
             }

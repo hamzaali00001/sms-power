@@ -97,7 +97,6 @@
         <script type="text/javascript" src="{{ asset('js/backend/dataTables.bootstrap.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/bootstrap-filestyle.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/jquery.validate.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('js/backend/jquery.smscharcount.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/intlTelInput.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/custom.js') }}"></script>
         <script type="text/javascript" src="{{ asset('js/backend/sms_counter.js') }}"></script>

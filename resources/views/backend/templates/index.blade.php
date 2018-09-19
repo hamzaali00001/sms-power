@@ -83,26 +83,33 @@
         });
 
         $("#show").on('shown.bs.modal', function(e) {
-            let name = $(e.relatedTarget).data("name")
-            let message = $(e.relatedTarget).data("message")
-            let characters = $(e.relatedTarget).data("characters")
+            let name = $(e.relatedTarget).data("name");
+            let message = $(e.relatedTarget).data("message");
+            let characters = $(e.relatedTarget).data("characters");
 
-            let form = $('#show-template')
+            let form = $('#show-template');
 
-            form.find('#name').val(name)
-            form.find('#message').val(message)
-            form.find('#characters').val(characters)
+            form.find('#name').val(name);
+            form.find('#message').val(message);
+            form.find('#characters').val(characters);
         });
 
         edit.on('shown.bs.modal', function(e) {
-            let name = $(e.relatedTarget).data("name")
-            let message = $(e.relatedTarget).data("message")
+            let name = $(e.relatedTarget).data("name");
+            let message = $(e.relatedTarget).data("message");
 
             let form = $('#edit-template');
 
             form.find('#name').val(name);
-            form.find('#message').val(message);
-            form.find('#placeholder').val("").trigger('change.select2');
+            form.find('#message-edit').val(message);
+            if (/{name}/.test(message)) {
+                form.find('#placeholder').val("{name}").trigger('change.select2');
+            } else {
+                form.find('#placeholder').val("").trigger('change.select2');
+            }
+            let counter = SmsCounter.count(message);
+            $('#remaining-edit').find('.blue').text(counter.remaining + "/" + counter.per_message);
+            $('#messages-edit').find('.blue').text(counter.messages);
 
             form.attr('action', $(e.relatedTarget).data("form-action"))
         });
@@ -151,6 +158,20 @@
             } else {
                 textarea.insertAtCaret('{name}');
             }
+            let counter = SmsCounter.count($('#message').val());
+            $('#remaining').find('.blue').text(counter.remaining + "/" + counter.per_message);
+            $('#messages').find('.blue').text(counter.messages);
+        });
+
+        $('#message').keyup(function() {
+            let counter = SmsCounter.count($(this).val());
+            $('#remaining').find('.blue').text(counter.remaining + "/" + counter.per_message);
+            $('#messages').find('.blue').text(counter.messages);
+        });
+        $('#message-edit').keyup(function () {
+            let counter = SmsCounter.count($(this).val());
+            $('#remaining-edit').find('.blue').text(counter.remaining + "/" + counter.per_message);
+            $('#messages-edit').find('.blue').text(counter.messages);
         });
     </script>
 @endpush

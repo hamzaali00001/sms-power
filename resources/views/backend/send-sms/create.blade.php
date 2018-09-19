@@ -259,6 +259,16 @@
     });
 </script>
 <script type="text/javascript">
+    function message_bulk(that) {
+        let counter = SmsCounter.count(that.val());
+        $('#remaining').find('.blue').text(counter.remaining + "/" + counter.per_message);
+        $('#messages').find('.blue').text(counter.messages);
+    }
+    function message_single(that) {
+        let counter = SmsCounter.count(that.val());
+        $('#remaining-single').find('.blue').text(counter.remaining + "/" + counter.per_message);
+        $('#messages-single').find('.blue').text(counter.messages);
+    }
     let templates = {!! $templates->toJson() !!}
     $('#template-bulk, #template-single').change(function() {
         let that = $(this);
@@ -270,18 +280,15 @@
         }
         let message = templates[index-1]['message'];
         textarea.val(message);
+        textarea.attr('id') === 'message-bulk' ? message_bulk($('#message-bulk')) : message_single($('#message-single'));
     });
     $('#message-bulk').keyup(function() {
         $('#template-bulk').val(0).trigger('change.select2');
-        let counter = SmsCounter.count($(this).val());
-        $('#remaining').find('.blue').text(counter.remaining + "/" + counter.per_message);
-        $('#messages').find('.blue').text(counter.messages);
+        message_bulk($(this));
     });
     $('#message-single').keyup(function() {
         $('#template-single').val(0).trigger('change.select2');
-        let counter = SmsCounter.count($(this).val());
-        $('#remaining-single').find('.blue').text(counter.remaining + "/" + counter.per_message);
-        $('#messages-single').find('.blue').text(counter.messages);
+        message_single($(this));
     });
 </script>
 @endpush

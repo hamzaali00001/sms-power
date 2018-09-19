@@ -18,16 +18,16 @@
     </ul>
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="bulk-sms">
-            <form action="{{ route('bulk-sms') }}" class="form-horizontal form-bordered" id="bulk-sms" method="POST">
+            <form action="{{ route('bulk-sms') }}" class="form-horizontal form-bordered" id="bulk-sms-form" method="POST">
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <input type="hidden" name="type" value="bulk">
                 <input type="hidden" name="status" value="{{ config('smspower.msg_status.info') }}">
                 @if (count($groups))
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to">Recipients:</label>
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to-bulk">Recipients:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <select class="select2 form-control" id="to" name="to" data-placeholder="Select Group">
+                        <select class="select2 form-control" id="to-bulk" name="to" data-placeholder="Select Group">
                             <option></option>
                             @foreach ($groups as $group)
                             <option value="{{ $group->id }}">{{ $group->name }} - ({{ $group->contacts->count() }} contacts)</option>
@@ -37,9 +37,9 @@
                 </div>
                 @if (count($senderids))
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="senderID">Sender ID:</label>
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="from-bulk">Sender ID:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <select class="form-control select2" id="from" name="from" data-placeholder="Select Sender ID">
+                        <select class="form-control select2" id="from-bulk" name="from" data-placeholder="Select Sender ID">
                             <option value="{{ env('SENDER_ID') }}">None</option>
                             @foreach ($senderids as $senderid)
                             <option value="{{ $senderid->name }}">{{ $senderid->name }}</option>
@@ -66,11 +66,11 @@
                 <div class="form-group">
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="message">Message:</label>
                     <div class=" col-xs-12 col-sm-9 col-md-9">
-                        <textarea class="form-control" rows="5" id="message" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
+                        <textarea class="form-control" rows="5" id="message-bulk" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
                         <div class="row text-small">
                             <div class="col-xs-12">
-                                <span id="remaining"><strong class='blue'>160</strong> characters remaining</span>
-                                <span id="messages" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
+                                <span id="remaining-bulk"><strong class='blue'>160</strong> characters remaining</span>
+                                <span id="messages-single" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="schedule">Send Time:</label>
                     <div class="col-xs-12 col-sm-9 col-md-9">
                         <label class="radio-inline col-xs-block">
-                            <input type="radio" id="sms_schedule_check" name="schedule" value="No" checked> Now (Instant)
+                            <input type="radio" id="sms_schedule_check-bulk" name="schedule" value="No" checked> Now (Instant)
                         </label>
                         <label class="radio-inline col-xs-block">
                             <input type="radio" id="sms_schedule_later_bulk" name="schedule" value="Yes"> Later (Schedule)
@@ -109,15 +109,15 @@
             </form>
         </div>
         <div role="tabpanel" class="tab-pane" id="single-sms">
-            <form action="{{ route('single-sms') }}" class="form-horizontal form-bordered" id="single-sms" method="POST">
+            <form action="{{ route('single-sms') }}" class="form-horizontal form-bordered" id="single-sms-form" method="POST">
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <input type="hidden" name="type" value="single">
                 <input type="hidden" name="status" value="{{ config('smspower.msg_status.info') }}">
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to">Recipient:</label>
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to-single">Recipient:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <input id="to" class="form-control" name="to" type="text" value="{{ old('to') }}">
+                        <input id="to-single" class="form-control" name="to" type="text" value="{{ old('to') }}">
                     </div>
                 </div>
                 @if (count($senderids))
@@ -152,11 +152,11 @@
 
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="message">Message:</label>
                     <div class=" col-xs-12 col-sm-9 col-md-9">
-                        <textarea class="form-control" rows="5" id="message" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
+                        <textarea class="form-control" rows="5" id="message-single" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
                         <div class="row text-small">
                             <div class="col-xs-12">
-                                <span id="remaining"><strong class='blue'>160</strong> characters remaining</span>
-                                <span id="messages" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
+                                <span id="remaining-single"><strong class='blue'>160</strong> characters remaining</span>
+                                <span id="messages-bulk" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
                             </div>
                         </div>
                     </div>
@@ -165,7 +165,7 @@
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="schedule">Send Time:</label>
                     <div class="col-xs-12 col-sm-9 col-md-9">
                         <label class="radio-inline col-xs-block">
-                            <input type="radio" id="sms_schedule_check" name="schedule" value="No" checked> Now (Instant)
+                            <input type="radio" id="sms_schedule_check-single" name="schedule" value="No" checked> Now (Instant)
                         </label>
                         <label class="radio-inline col-xs-block">
                             <input type="radio" id="sms_schedule_later_single" name="schedule" value="Yes"> Later (Schedule)
@@ -196,15 +196,17 @@
 
 @push('scripts')
 <script>
-    $("#single-sms").validate({
-        highlight: function(element) {
+    $("#single-sms-form").validate({
+        errorElement: 'strong',
+        errorClass: 'help-block',
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass(errorClass);
             $(element).closest('.form-group').addClass('has-error');
         },
         unhighlight: function(element) {
+            $(element).removeClass(errorClass);
             $(element).closest('.form-group').removeClass('has-error');
         },
-        errorElement: 'span',
-        errorClass: 'help-block',
         rules: {
             recipient: {
                 required: true
@@ -221,7 +223,7 @@
             }
         }
     });
-    $("#bulk-sms").validate({
+    $("#bulk-sms-form").validate({
         highlight: function(element) {
             $(element).closest('.form-group').addClass('has-error');
         },
@@ -283,6 +285,12 @@
         }
         let message = templates[index-1]['message'];
         textarea.val(message);
+    });
+    $('#message-bulk').keyup(function() {
+        $('#template-bulk').val(0).trigger('change.select2');
+    });
+    $('#message-single').keyup(function() {
+        $('#template-single').val(0).trigger('change.select2');
     });
 </script>
 @endpush

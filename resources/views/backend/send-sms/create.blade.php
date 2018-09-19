@@ -17,17 +17,17 @@
         <li role="presentation"><a href="#single-sms" aria-controls="single-sms" role="tab" data-toggle="tab"><i class="fa fa-file-o blue"></i> Single SMS</a></li>
     </ul>
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="bulk-sms">
-            <form action="{{ route('bulk-sms') }}" class="form-horizontal form-bordered" id="bulk-sms-form" method="POST">
+        <div role="tabpanel" class="tab-pane active">
+            <form action="{{ route('bulk-sms') }}" class="form-horizontal form-bordered" id="bulk-sms" method="POST">
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <input type="hidden" name="type" value="bulk">
                 <input type="hidden" name="status" value="{{ config('smspower.msg_status.info') }}">
                 @if (count($groups))
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to-bulk">Recipients:</label>
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to">Recipients:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <select class="select2 form-control" id="to-bulk" name="to" data-placeholder="Select Group">
+                        <select class="select2 form-control" id="to" name="to" data-placeholder="Select Group">
                             <option></option>
                             @foreach ($groups as $group)
                             <option value="{{ $group->id }}">{{ $group->name }} - ({{ $group->contacts->count() }} contacts)</option>
@@ -37,9 +37,9 @@
                 </div>
                 @if (count($senderids))
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="from-bulk">Sender ID:</label>
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="senderID">Sender ID:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <select class="form-control select2" id="from-bulk" name="from" data-placeholder="Select Sender ID">
+                        <select class="form-control select2" id="from" name="from" data-placeholder="Select Sender ID">
                             <option value="{{ env('SENDER_ID') }}">None</option>
                             @foreach ($senderids as $senderid)
                             <option value="{{ $senderid->name }}">{{ $senderid->name }}</option>
@@ -47,6 +47,8 @@
                         </select>
                     </div>
                 </div>
+                @else
+                    <input type="hidden" name="from" value="{{ env('SENDER_ID') }}">
                 @endif
                 @if (count($templates))
                 <div class="form-group">
@@ -67,8 +69,8 @@
                         <textarea class="form-control" rows="5" id="message-bulk" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
                         <div class="row text-small">
                             <div class="col-xs-12">
-                                <span id="remaining-bulk"><strong class='blue'>160</strong> characters remaining</span>
-                                <span id="messages-single" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
+                                <span id="remaining"><strong class='blue'>160</strong> characters remaining</span>
+                                <span id="messages" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
                             </div>
                         </div>
                     </div>
@@ -77,7 +79,7 @@
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="schedule">Send Time:</label>
                     <div class="col-xs-12 col-sm-9 col-md-9">
                         <label class="radio-inline col-xs-block">
-                            <input type="radio" id="sms_schedule_check-bulk" name="schedule" value="No" checked> Now (Instant)
+                            <input type="radio" id="sms_schedule_check" name="schedule" value="No" checked> Now (Instant)
                         </label>
                         <label class="radio-inline col-xs-block">
                             <input type="radio" id="sms_schedule_later_bulk" name="schedule" value="Yes"> Later (Schedule)
@@ -103,19 +105,19 @@
                 <div class="form-group">
                     <input type="text" class="form-control" id="name" name="name" value="TIP: First add Groups &amp; Contacts to send Bulk SMS." disabled>
                 </div>
-                @endif                  
+                @endif
             </form>
         </div>
-        <div role="tabpanel" class="tab-pane" id="single-sms">
-            <form action="{{ route('single-sms') }}" class="form-horizontal form-bordered" id="single-sms-form" method="POST">
+        <div role="tabpanel" class="tab-pane">
+            <form action="{{ route('single-sms') }}" class="form-horizontal form-bordered" id="single-sms" method="POST">
                 <input name="_token" type="hidden" value="{{ csrf_token() }}">
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <input type="hidden" name="type" value="single">
                 <input type="hidden" name="status" value="{{ config('smspower.msg_status.info') }}">
                 <div class="form-group">
-                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to-single">Recipient:</label>
+                    <label class="control-label col-xs-12 col-sm-3 col-md-3" for="to">Recipient:</label>
                     <div class="col-xs-12 col-sm-6 col-md-4">
-                        <input id="to-single" class="form-control" name="to" type="text" value="{{ old('to') }}">
+                        <input id="to" class="form-control" name="to" type="text" value="{{ old('to') }}">
                     </div>
                 </div>
                 @if (count($senderids))
@@ -130,6 +132,8 @@
                         </select>
                     </div>
                 </div>
+                @else
+                    <input type="hidden" name="from" value="{{ env('SENDER_ID') }}">
                 @endif
                 @if (count($templates))
                 <div class="form-group">
@@ -143,7 +147,7 @@
                         </select>
                     </div>
                 </div>
-                @endif        
+                @endif
                 <div class="form-group">
 
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="message">Message:</label>
@@ -151,8 +155,8 @@
                         <textarea class="form-control" rows="5" id="message-single" name="message" placeholder="Type your message here">{{ old('message') }}</textarea>
                         <div class="row text-small">
                             <div class="col-xs-12">
-                                <span id="remaining-single"><strong class='blue'>160</strong> characters remaining</span>
-                                <span id="messages-bulk" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
+                                <span id="remaining"><strong class='blue'>160</strong> characters remaining</span>
+                                <span id="messages" class="pull-right"><strong class='blue'>1</strong> message(s)</span>
                             </div>
                         </div>
                     </div>
@@ -161,7 +165,7 @@
                     <label class="control-label col-xs-12 col-sm-3 col-md-3" for="schedule">Send Time:</label>
                     <div class="col-xs-12 col-sm-9 col-md-9">
                         <label class="radio-inline col-xs-block">
-                            <input type="radio" id="sms_schedule_check-single" name="schedule" value="No" checked> Now (Instant)
+                            <input type="radio" id="sms_schedule_check" name="schedule" value="No" checked> Now (Instant)
                         </label>
                         <label class="radio-inline col-xs-block">
                             <input type="radio" id="sms_schedule_later_single" name="schedule" value="Yes"> Later (Schedule)
@@ -182,17 +186,17 @@
                             </div>
                         </div>
                     </div>
-                </div>                    
+                </div>
             </form>
         </div>
     </div>
-    <!-- End Page Content -->  
+    <!-- End Page Content -->
 </div>
 @stop
 
 @push('scripts')
 <script>
-    $("#single-sms-form").validate({
+    $("#single-sms").validate({
         errorElement: 'strong',
         errorClass: 'help-block',
         highlight: function(element, errorClass, validClass) {
@@ -219,7 +223,7 @@
             }
         }
     });
-    $("#bulk-sms-form").validate({
+    $("#bulk-sms").validate({
         highlight: function(element) {
             $(element).closest('.form-group').addClass('has-error');
         },
@@ -256,7 +260,7 @@
 </script>
 <script type="text/javascript">
     $(function(){
-        $('textarea#sms_body').smsCharCount({ 
+        $('textarea#sms_body').smsCharCount({
             onUpdate: function(data){
               // The 'data' object passed into this callback will contain something like the following
               // {

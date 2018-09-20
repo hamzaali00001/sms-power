@@ -62,7 +62,7 @@ class SendSMSController extends Controller
 
             $sms->send([
                 'message' => request('message') .' '. env('OPT_OUT'),
-                'from' => request('from') ?? env('SENDER_ID'),
+                'from' => request('from'),
                 'to' => request('to'),
                 'enqueue' => 'true'
             ]);
@@ -109,7 +109,6 @@ class SendSMSController extends Controller
         }
 
         if (request('schedule') === 'No') {
-            dd(request()->all());
             $recipients = Contact::active()->where('group_id', request('recipients'))->pluck('mobile')->toArray();
             foreach ($recipients->chunk(100) as $key => $value) {
                 SentMessage::create([
@@ -128,7 +127,7 @@ class SendSMSController extends Controller
 
             $sms->send([
                 'message' => request('message') .' '. env('OPT_OUT'),
-                'from' => request('from') ?? env('SENDER_ID'),
+                'from' => request('from'),
                 'to' => $recipients,
                 'enqueue' => 'true'
             ]);

@@ -42,8 +42,11 @@ class SendSMSController extends Controller
     public function singleSMS()
     {
         // Check user credit balance and if not sufficient Redirect
-        if (!is_null($shouldRedirect = $this->checkBalance())) {
-            return $shouldRedirect;
+        if (auth()->user()->creditBalance() < $this->totalCost()) {
+            
+            flash()->error('Your message cannot be sent due to insufficient credit balance.');
+
+            return redirect()->back();
         }
 
         if (request('schedule') === 'No') {
@@ -104,8 +107,11 @@ class SendSMSController extends Controller
     public function bulkSMS()
     {
         // Check user credit balance and if not sufficient Redirect
-        if (!is_null($shouldRedirect = $this->checkBalance())) {
-            return $shouldRedirect;
+        if (auth()->user()->creditBalance() < $this->totalCost()) {
+            
+            flash()->error('Your message cannot be sent due to insufficient credit balance.');
+
+            return redirect()->back();
         }
 
         if (request('schedule') === 'No') {
@@ -172,19 +178,6 @@ class SendSMSController extends Controller
         $apiKey = env('AFRICASTALKING_API_KEY');
 
         return new AfricasTalking($username, $apiKey);
-    }
-
-    /**
-     * Check the user's balance.
-     */
-    private function checkBalance()
-    {
-        if (auth()->user()->creditBalance() < $this->totalCost()) {
-            
-            flash()->error('Your message cannot be sent due to insufficient credit balance.');
-
-            return redirect()->back();
-        }
     }
 
     /**

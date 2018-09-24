@@ -26,7 +26,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified'], 'namesp
 
 // Backend routes
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified'], 'namespace' => 'Backend'], function () {
-    Route::get('/', 'HomeController')->name('dashboard');
+    Route::get('/', 'DashboardController')->name('dashboard');
 
 	Route::get('contact-us', 'ContactUsController@create')->name('contact-us');
 	Route::post('contact-us', 'ContactUsController@sendEmail');

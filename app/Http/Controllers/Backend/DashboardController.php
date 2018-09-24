@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\ScheduledMessage;
 
-class HomeController extends Controller
+class DashboardController extends Controller
 {
     /**
      * Show the dashboard.

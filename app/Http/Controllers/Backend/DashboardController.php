@@ -20,6 +20,6 @@ class DashboardController extends Controller
             $messages = auth()->user()->scheduledMessages()->with('user')->latest()->limit(10)->get();
         }
 
-        return view('backend.pages.home', compact('messages'));
+        return view('backend.pages.dashboard', compact('messages'));
     }
 }

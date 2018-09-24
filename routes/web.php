@@ -18,14 +18,14 @@ Route::group(['namespace' => 'Frontend'], function () {
 
 // Auth routes
 Auth::routes(['verify' => true]);
-Route::group(['prefix' => 'admin', 'middleware' => ['verified', 'auth'], 'namespace' => 'Auth'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified'], 'namespace' => 'Auth'], function () {
 	Route::post('logout', 'LoginController@logout');
     Route::get('change-password', 'ChangePasswordController@edit')->name('change-password');
     Route::post('change-password', 'ChangePasswordController@update');
 });
 
 // Backend routes
-Route::group(['prefix' => 'admin', 'middleware' => ['verified', 'auth'], 'namespace' => 'Backend'], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified'], 'namespace' => 'Backend'], function () {
     Route::get('/', 'HomeController')->name('dashboard');
 
 	Route::get('contact-us', 'ContactUsController@create')->name('contact-us');
